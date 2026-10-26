@@ -21,3 +21,4 @@ public class BaroneShimmer extends Enemy{
         }
     }
 }
+
