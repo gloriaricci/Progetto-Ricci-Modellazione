@@ -15,7 +15,31 @@ public class GameController {
 
     public void caricaLivello(int livello){
         this.currentBoss = LevelFactory.creaBossPerLivello(livello);
-        System.out.println("Inizio Livello" + livello + ":" + currentBoss.getName());
+        if (currentBoss != null) {
+            System.out.println("Inizio Livello" + livello + ":" + currentBoss.getName());
+        }
+    }
+
+    public void playerAttack(){
+        if (player.isAlive() && currentBoss != null && currentBoss.isActive()){
+            player.attacca((currentBoss));
+
+            if (currentBoss.isActive()){
+                currentBoss.attacca(player);
+            }
+
+            controllaStatoGioco();
+        }
+    }
+
+    public void playerUsePotion(){
+        if (player.isAlive()&& currentBoss != null && currentBoss.isActive()){
+            if (player.usePotion()){
+                player.heal(20);
+                currentBoss.attacca(player);
+            }
+            controllaStatoGioco();
+        }
     }
 
     public void controllaStatoGioco(){
@@ -24,6 +48,14 @@ public class GameController {
         }
         if (!currentBoss.isActive()){
             System.out.println("Hai sconfitto" + currentBoss.getName()+ "!!");
+
+            player.gainExp(50);
+
+            if (currentLevel == 3 && currentBoss.getName().equals("Gemello 1")){
+                System.out.println("Rimane un gemello da sconfiggere...");
+                currentBoss = new IGemelli("Gemello 2");
+                return;
+            }
             if (currentLevel < max_level){
                 currentLevel++;
                 caricaLivello(currentLevel);
