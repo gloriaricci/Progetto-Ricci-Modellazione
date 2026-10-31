@@ -17,8 +17,8 @@ public class Enemy extends Entity{
         return specialEffect;
     }
 
-    @Override
-    public void update(double deltaTime){
 
+    public void attacca(Nox hero){
+        hero.takeDamage(this.getAttackPower());
     }
 }

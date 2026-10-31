@@ -9,16 +9,16 @@ public class BaroneShimmer extends Enemy{
         super("bossFinale", "Barone dello Shimmer", 300, 35, 1.5, 5, "distorsione temporale");
     }
 
-    public void eseguiTurno(Hero hero){
+    @Override
+    public void attacca (Nox hero) {
         counterTurni++;
 
-        if (counterTurni % 2 == 0){
-            heal(ricaricoEnergia);
+        hero.takeDamage(getAttackPower());
 
-            System.out.println("Distorsione temporale: il boss ricarica"+ ricaricoEnergia+ "HP!");
-        }else{
-            hero.takeDamage(getAttackPower());
-        }
+         if (counterTurni % 2 == 0){
+             heal(ricaricoEnergia);
+             System.out.println("Distorsione temporale!! il barone ricarica " + ricaricoEnergia + "punti vita.");
+         }
     }
 }
 
