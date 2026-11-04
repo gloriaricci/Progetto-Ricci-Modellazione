@@ -18,4 +18,31 @@ public class LevelFactory {
                 return null;
         }
     }
+
+    public static void ApplicaRicompensa(int livelloCompleto, Hero hero){
+        switch (livelloCompleto){
+            case 1:
+                hero.unlockScattoRapido();
+                System.out.println("Fine primo livello: hai sbloccato lo Scatto Rapido!");
+                break;
+            case 2:
+                hero.setWeapon(new Spada());
+                System.out.println("Fine secondo livello: hai ottenuto la Spada!");
+                break;
+            case 3:
+                hero.setWeapon(new SpadaTemplari());
+                hero.unlockCuraDeiTemplari();
+                System.out.println("Fine terzo livello: hai ottenuto la Grande Spada dei Templari e la sua abilità di cura!");
+                break;
+            case 4:
+                hero.unlockFuriaShimmer();
+                System.out.println("Fine quarto livello: hai sbloccato l'abilità della Furia Shimmer!");
+                break;
+            case 5:
+                System.out.println("COMPLIMENTI! Hai sconfitto il Barone dell Shimmer e liberato la città. Hai vinto il gioco!");
+                break;
+            default:
+                break;
+        }
+    }
 }

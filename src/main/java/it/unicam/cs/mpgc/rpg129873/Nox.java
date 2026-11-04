@@ -5,10 +5,17 @@ public class Nox extends Hero{
     private int potionsCount;
     private int potionHealAmount;
 
+    private int level;
+    private int experience;
+    private int expNextLevel;
+
     public Nox(){
-        super("eroe nox", "Nox", 100, 20, 1.0, 0.0);
+        super("eroe Nox", "Nox", 100, 0);
         this.potionsCount = 2;
-        this.potionHealAmount = 20;
+        this.potionHealAmount = 40;
+        this.level = 1;
+        this.experience = 0;
+        this.expNextLevel = 100;
     }
 
     public void attacca(Enemy enemy){
@@ -35,5 +42,32 @@ public class Nox extends Hero{
 
     public int getPotionsCount(){
         return potionsCount;
+    }
+
+    public void levelUp(){
+        this.level++;
+        this.expNextLevel = (int) (this.expNextLevel * 1.5);
+
+        setMaxHp(getMaxHp() + 25);
+        setCurrentHp(getMaxHp());
+
+        System.out.println("Nox, sei ora al livello" + level+ "!");
+        System.out.println("La tua vita massima è aumentata!");
+    }
+
+    public int getLevel(){
+        return level;
+    }
+    public int getExperience(){
+        return experience;
+    }
+
+    public void gainExp(int amount){
+        this.experience += amount;
+        System.out.println(getName() + ", hai guadagnato" + amount + "punti esperienza.");
+        while (this.experience >= this.expNextLevel){
+            this.experience -= this.expNextLevel;
+            levelUp();
+        }
     }
 }

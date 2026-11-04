@@ -6,10 +6,9 @@ public abstract class Entity {
     private int maxHp;
     private int currentHp;
     private int attackPower;
-    private double speed;
     private boolean active;
 
-    public Entity(String id, String name, int maxHp, int attackPower, double speed){
+    public Entity(String id, String name, int maxHp, int attackPower){
         if(id == null || id.isBlank()){
             throw new IllegalArgumentException("L'id dell'entità non può essere nullo o vuoto");
         }
@@ -18,7 +17,6 @@ public abstract class Entity {
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.attackPower = attackPower;
-        this.speed = speed;
         this. active = true;
     }
 
@@ -53,13 +51,6 @@ public abstract class Entity {
         this.attackPower = attackPower;
     }
 
-    public double getSpeed(){
-        return speed;
-    }
-    public void setSpeed(double speed){
-        this.speed = speed;
-    }
-
     public boolean isActive(){
         return active;
     }
@@ -82,6 +73,5 @@ public abstract class Entity {
         return this.currentHp > 0;
     }
 
-    public abstract void update (double deltaTime);
 }
 

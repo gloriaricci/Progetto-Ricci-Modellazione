@@ -9,6 +9,7 @@ public class GameController {
 
     public GameController(){
         this.player = new Nox();
+        this.player.setWeapon(new Pugnale());
         this.currentLevel = 1;
         caricaLivello (currentLevel);
     }
@@ -22,6 +23,7 @@ public class GameController {
 
     public void playerAttack(){
         if (player.isAlive() && currentBoss != null && currentBoss.isActive()){
+            player.onTurnStart();
             player.attacca((currentBoss));
 
             if (currentBoss.isActive()){
@@ -35,7 +37,7 @@ public class GameController {
     public void playerUsePotion(){
         if (player.isAlive()&& currentBoss != null && currentBoss.isActive()){
             if (player.usePotion()){
-                player.heal(20);
+                player.heal(40);
                 currentBoss.attacca(player);
             }
             controllaStatoGioco();
@@ -56,6 +58,9 @@ public class GameController {
                 currentBoss = new IGemelli("Gemello 2");
                 return;
             }
+
+            LevelFactory.ApplicaRicompensa(currentLevel, player);
+
             if (currentLevel < max_level){
                 currentLevel++;
                 caricaLivello(currentLevel);
