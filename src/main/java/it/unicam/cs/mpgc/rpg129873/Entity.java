@@ -6,18 +6,16 @@ public abstract class Entity {
     private int maxHp;
     private int currentHp;
     private int attackPower;
-    private boolean active;
 
     public Entity(String id, String name, int maxHp, int attackPower){
         if(id == null || id.isBlank()){
             throw new IllegalArgumentException("L'id dell'entità non può essere nullo o vuoto");
         }
         this.id = id;
-        this.name = name != null ? name : "Unknow entity";
+        this.name = name != null ? name : "Unknown entity";
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.attackPower = attackPower;
-        this. active = true;
     }
 
     public String getId(){
@@ -35,6 +33,7 @@ public abstract class Entity {
     }
     public void setMaxHp(int maxHp){
         this.maxHp = maxHp;
+        this.currentHp = Math.min(this.currentHp, maxHp);
     }
 
     public int getCurrentHp (){
@@ -51,18 +50,11 @@ public abstract class Entity {
         this.attackPower = attackPower;
     }
 
-    public boolean isActive(){
-        return active;
-    }
-    public void setActive (boolean active){
-        this.active = active;
-    }
-
     public void takeDamage(int damage){
-        this.currentHp = Math.max (0, this.currentHp - damage);
-        if (this.currentHp == 0){
-            this.active = false;
+        if (damage < 0){
+            return;
         }
+        this.currentHp = Math.max (0, this.currentHp - damage);
     }
 
     public void heal (int amount){

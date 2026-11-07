@@ -4,8 +4,8 @@ public class Enemy extends Entity{
     private int levelNumber;
     private String specialEffect;
 
-    public Enemy(String id, String name, int maxHp, int attackPower, double speed, int levelNumber, String specialEffect){
-        super(id, name, maxHp,attackPower, speed);
+    public Enemy(String id, String name, int maxHp, int attackPower, int levelNumber, String specialEffect){
+        super(id, name, maxHp,attackPower);
         this.levelNumber = levelNumber;
         this.specialEffect = specialEffect;
     }

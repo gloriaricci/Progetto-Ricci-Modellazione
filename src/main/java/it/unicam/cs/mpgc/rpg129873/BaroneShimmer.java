@@ -6,18 +6,18 @@ public class BaroneShimmer extends Enemy{
     private int ricaricoEnergia = 20;
 
     public BaroneShimmer(){
-        super("bossFinale", "Barone dello Shimmer", 300, 35, 1.5, 5, "distorsione temporale");
+        super("bossFinale", "Barone dello Shimmer", 300, 35, 5, "distorsione temporale");
     }
 
     @Override
     public void attacca (Nox hero) {
         counterTurni++;
 
-        hero.takeDamage(getAttackPower());
+        super.attacca(hero);
 
          if (counterTurni % 2 == 0){
              heal(ricaricoEnergia);
-             System.out.println("Distorsione temporale!! il barone ricarica " + ricaricoEnergia + "punti vita.");
+             System.out.println("Distorsione temporale!! il barone ricarica " + ricaricoEnergia + " punti vita.");
          }
     }
 }

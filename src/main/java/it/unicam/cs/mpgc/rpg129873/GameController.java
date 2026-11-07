@@ -1,84 +1,102 @@
 package it.unicam.cs.mpgc.rpg129873;
 
 public class GameController {
+    private static final int max_level = 5;
 
     private Nox player;
-    private Enemy currentBoss;
-    private int currentLevel;
-    private static final int max_level = 5;
+    private Level level;
+    private int currentLevelNumber;
+
 
     public GameController(){
         this.player = new Nox();
         this.player.setWeapon(new Pugnale());
-        this.currentLevel = 1;
-        caricaLivello (currentLevel);
+        caricaLivello (1);
     }
 
-    public void caricaLivello(int livello){
-        this.currentBoss = LevelFactory.creaBossPerLivello(livello);
-        if (currentBoss != null) {
-            System.out.println("Inizio Livello" + livello + ":" + currentBoss.getName());
-        }
+    public void caricaLivello(int numero){
+        this.currentLevelNumber = numero;
+        this.level = LevelFactory.creaLivello(numero);
+            System.out.println("Inizio Livello" + numero + ":" + getCurrentBoss().getName());
     }
 
-    public void playerAttack(){
-        if (player.isAlive() && currentBoss != null && currentBoss.isActive()){
+    public void playerAttack() {
+        if (canFight()) {
             player.onTurnStart();
-            player.attacca((currentBoss));
+            player.attacca(getCurrentBoss());
 
-            if (currentBoss.isActive()){
-                currentBoss.attacca(player);
+            if (getCurrentBoss().isAlive()) {
+                getCurrentBoss().attacca(player);
             }
-
             controllaStatoGioco();
         }
     }
 
-    public void playerUsePotion(){
-        if (player.isAlive()&& currentBoss != null && currentBoss.isActive()){
-            if (player.usePotion()){
-                player.heal(40);
-                currentBoss.attacca(player);
+    public void playerUsePotion() {
+        if (canFight()) {
+            if (player.getCurrentHp() == player.getMaxHp()) {
+                System.out.println("La tua vita è già al massimo.");
+            } else if (player.usePotion()) {
+                System.out.println("Hai usato una pozione. Pozioni rimanenti: " + player.getPotionsCount());
+                getCurrentBoss().attacca(player);
+            } else {
+                System.out.println("Non hai più pozioni di cura.");
             }
             controllaStatoGioco();
+        }
+    }
+
+    public void playerUseFuria() {
+        if (canFight()) {
+            player.onTurnStart();
+            if (player.executeFuriaShimmer(getCurrentBoss())) {
+                if (getCurrentBoss().isAlive()) {
+                    getCurrentBoss().attacca(player);
+                }
+                controllaStatoGioco();
+            }
         }
     }
 
     public void controllaStatoGioco(){
-        if (currentBoss == null){
+
+        if (!player.isAlive()){
+            System.out.println("Sei stato sconfitto. Game over.");
             return;
         }
-        if (!currentBoss.isActive()){
-            System.out.println("Hai sconfitto" + currentBoss.getName()+ "!!");
 
-            player.gainExp(50);
-
-            if (currentLevel == 3 && currentBoss.getName().equals("Gemello 1")){
-                System.out.println("Rimane un gemello da sconfiggere...");
-                currentBoss = new IGemelli("Gemello 2");
-                return;
-            }
-
-            LevelFactory.ApplicaRicompensa(currentLevel, player);
-
-            if (currentLevel < max_level){
-                currentLevel++;
-                caricaLivello(currentLevel);
-            }else{
-                System.out.println("HAI VINTO");
-            }
+        if (getCurrentBoss().isAlive()) {
+            return;
         }
+
+        System.out.println("Hai sconfitto " + getCurrentBoss().getName() + "!");
+
+        if (level.hasNextEnemy()) {
+            level.nextEnemy();
+            System.out.println("Arriva " + getCurrentBoss().getName() + "!");
+            return;
+        }
+
+        LevelFactory.ApplicaRicompensa(currentLevelNumber, player);
+
+        if (currentLevelNumber < max_level) {
+            caricaLivello(currentLevelNumber + 1);
+        }
+    }
+
+    private boolean canFight(){
+        return player.isAlive() && getCurrentBoss().isAlive();
     }
 
     public Nox getPlayer(){
         return player;
     }
 
-    public Enemy getCurrentBoss(){
-        return currentBoss;
+    public Enemy getCurrentBoss() {
+        return level.getCurrentEnemy();
     }
 
-    public int getCurrentLevel(){
-        return currentLevel;
+    public int getCurrentLevel() {
+        return currentLevelNumber;
     }
 }

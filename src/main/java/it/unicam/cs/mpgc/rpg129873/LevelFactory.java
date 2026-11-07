@@ -1,21 +1,25 @@
 package it.unicam.cs.mpgc.rpg129873;
 
+import java.util.List;
+
 public class LevelFactory {
 
-    public static Enemy creaBossPerLivello(int numeroLivello){
+    public static Level creaLivello(int numeroLivello){
         switch (numeroLivello){
             case 1:
-                return new CollezionistaDiOssa();
+                return new Level(1, List.of(new CollezionistaDiOssa()));
             case 2:
-                return new MadreBrassmonkey();
+                return new Level(2, List.of(new MadreBrassmonkey()));
             case 3:
-                return new IGemelli("Gemello 1");
+                return new Level(3, List.of(
+                        new IGemelli("boss3a", "Gemello 1"),
+                        new IGemelli("boss3b", "Gemello 2")));
             case 4:
-                return new DuchessaDiSangue();
+                return new Level(4, List.of(new DuchessaDiSangue()));
             case 5:
-                return new BaroneShimmer();
+                return new Level(5, List.of(new BaroneShimmer()));
             default:
-                return null;
+                throw new IllegalArgumentException("Livello non valido: " + numeroLivello);
         }
     }
 

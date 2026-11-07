@@ -38,8 +38,8 @@ public class Hero extends Entity {
         countTurni++;
 
         if (CuraDeiTemplariUnlocked && countTurni % 3 == 0){
-            heal(20);
-            System.out.println("Hai rigenerato 20 punti vita.");
+            heal(15);
+            System.out.println("Hai rigenerato 15 punti vita.");
         }
     }
 
@@ -52,22 +52,23 @@ public class Hero extends Entity {
         }
 
         if (ScattoRapidoUnlocked && countTurni % 2 == 0){
-            System.out.println("Usa scatto rapido (+5 danno)");
             totalDamage += 5;
         }
 
         return totalDamage;
     }
 
-    public boolean executeFuriaShimmer(Enemy target){
+    public boolean executeFuriaShimmer(Entity target){
         if (!FuriaShimmerUnlocked){
             System.out.println("La Furia Shimmer non è ancora sbloccata.");
             return false;
         }
 
+        int damage = getAttackPower();
+
         System.out.println("FURIA SHIMMER");
-        target.takeDamage(getAttackPower());
-        target.takeDamage(getAttackPower());
+        target.takeDamage(damage);
+        target.takeDamage(damage);
         shimmerCount++;
 
         if (shimmerCount % 3 == 0){
