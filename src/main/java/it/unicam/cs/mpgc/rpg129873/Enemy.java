@@ -18,7 +18,7 @@ public class Enemy extends Entity{
     }
 
 
-    public void attacca(Nox hero){
+    public void attacca(Hero hero){
         hero.takeDamage(this.getAttackPower());
     }
 }

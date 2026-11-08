@@ -10,7 +10,7 @@ public class BaroneShimmer extends Enemy{
     }
 
     @Override
-    public void attacca (Nox hero) {
+    public void attacca (Hero hero) {
         counterTurni++;
 
         super.attacca(hero);

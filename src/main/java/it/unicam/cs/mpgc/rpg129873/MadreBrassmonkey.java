@@ -8,7 +8,7 @@ public class MadreBrassmonkey extends Enemy{
     }
 
     @Override
-    public void attacca(Nox hero){
+    public void attacca(Hero hero){
         turniAttacco++;
         super.attacca(hero);
 

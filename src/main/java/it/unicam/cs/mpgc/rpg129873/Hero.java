@@ -2,12 +2,10 @@ package it.unicam.cs.mpgc.rpg129873;
 
 public class Hero extends Entity {
     private Weapon currentWeapon;
-    private boolean ScattoRapidoUnlocked = false;
-    private boolean CuraDeiTemplariUnlocked = false;
-    private boolean FuriaShimmerUnlocked = false;
+    private PassiveAbility passive;
+    private ActiveAbility activeAbility;
 
     private int countTurni = 0;
-    private int shimmerCount = 0;
     public Hero(String id, String name, int maxHp,int attackPower){
         super(id, name, maxHp,attackPower);
     }
@@ -15,66 +13,54 @@ public class Hero extends Entity {
     public Weapon getCurrentWeapon() {
         return currentWeapon;
     }
-
     public void setWeapon(Weapon weapon){
         this.currentWeapon = weapon;
     }
 
-    public void unlockScattoRapido (){
-        this.ScattoRapidoUnlocked = true;
+    public PassiveAbility getPassive(){
+        return passive;
     }
-    public void unlockCuraDeiTemplari(){
-        this.CuraDeiTemplariUnlocked = true;
-    }
-    public void unlockFuriaShimmer(){
-        this.FuriaShimmerUnlocked = true;
+    public void setPassive(PassiveAbility passive){
+        this.passive = passive;
     }
 
-    public boolean hasFuriaShimmer(){
-        return FuriaShimmerUnlocked;
+    public ActiveAbility getActiveAbility(){
+        return activeAbility;
+    }
+    public void setActiveAbility(ActiveAbility a){
+        this.activeAbility = a;
+    }
+    public boolean hasActiveAbility(){
+        return activeAbility != null;
     }
 
     public void onTurnStart(){
         countTurni++;
 
-        if (CuraDeiTemplariUnlocked && countTurni % 3 == 0){
-            heal(15);
-            System.out.println("Hai rigenerato 15 punti vita.");
+        if (passive != null){
+            passive.onTurnStart(this, countTurni);
         }
     }
 
     @Override
     public int getAttackPower(){
-        int basePower = super.getAttackPower();
-        int totalDamage = basePower;
+        int damage = super.getAttackPower();
         if (currentWeapon != null){
-            totalDamage+= currentWeapon.getDanno();
+            damage+= currentWeapon.getDanno();
         }
 
-        if (ScattoRapidoUnlocked && countTurni % 2 == 0){
-            totalDamage += 5;
+        if (passive != null){
+            damage = passive.modifyDamage(damage, countTurni);
         }
 
-        return totalDamage;
+        return damage;
     }
 
-    public boolean executeFuriaShimmer(Entity target){
-        if (!FuriaShimmerUnlocked){
-            System.out.println("La Furia Shimmer non è ancora sbloccata.");
+    public boolean useActiveAbility(Entity target){
+        if (activeAbility == null){
             return false;
         }
-
-        int damage = getAttackPower();
-
-        System.out.println("FURIA SHIMMER");
-        target.takeDamage(damage);
-        target.takeDamage(damage);
-        shimmerCount++;
-
-        if (shimmerCount % 3 == 0){
-            takeDamage(5);
-            System.out.println("L'uso della Furia Shimmer ti consuma la vita di 5 HP.");
-        }
+        activeAbility.use(this, target);
         return true;
     }
 

@@ -8,7 +8,7 @@ public class DuchessaDiSangue extends Enemy{
     }
 
     @Override
-    public void attacca(Nox hero){
+    public void attacca(Hero hero){
         contatoreTurni++;
 
         super.attacca(hero);

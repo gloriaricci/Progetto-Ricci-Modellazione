@@ -1,7 +1,6 @@
 package it.unicam.cs.mpgc.rpg129873;
 
 public class GameController {
-    private static final int max_level = 5;
 
     private Nox player;
     private Level level;
@@ -48,15 +47,19 @@ public class GameController {
 
     public void playerUseFuria() {
         if (canFight()) {
+            if (!player.hasActiveAbility()){
+                System.out.println("non hai ancora nessuna abilità attiva");
+            }
             player.onTurnStart();
-            if (player.executeFuriaShimmer(getCurrentBoss())) {
-                if (getCurrentBoss().isAlive()) {
-                    getCurrentBoss().attacca(player);
+            player.useActiveAbility(getCurrentBoss());
+
+            if (getCurrentBoss().isAlive()) {
+                getCurrentBoss().attacca(player);
                 }
                 controllaStatoGioco();
             }
         }
-    }
+
 
     public void controllaStatoGioco(){
 
@@ -77,10 +80,12 @@ public class GameController {
             return;
         }
 
-        LevelFactory.ApplicaRicompensa(currentLevelNumber, player);
+        level.getReward().apply(player);
 
-        if (currentLevelNumber < max_level) {
+        if (currentLevelNumber < LevelFactory.getTotalLevels()) {
             caricaLivello(currentLevelNumber + 1);
+        } else {
+            System.out.println("COMPLIMENTI! Hai sconfitto il Barone dello Shimmer e liberato la città. Hai vinto il gioco!");
         }
     }
 
