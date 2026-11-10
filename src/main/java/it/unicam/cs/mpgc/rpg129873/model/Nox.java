@@ -1,9 +1,9 @@
 package it.unicam.cs.mpgc.rpg129873.model;
 
-public class Nox extends Hero{
+public class Nox extends Hero implements PotionHolder{
 
     private int potionsCount;
-    private int potionHealAmount;
+    private final int potionHealAmount;
 
     public Nox(){
         super("eroe Nox", "Nox", 100, 0);
@@ -11,12 +11,7 @@ public class Nox extends Hero{
         this.potionHealAmount = 40;
     }
 
-    public void attack(Enemy enemy){
-        if(enemy != null ){
-            enemy.takeDamage(getAttackPower());
-        }
-    }
-
+    @Override
     public boolean usePotion(){
         if(potionsCount > 0 && getCurrentHp() < getMaxHp()) {
             potionsCount--;
@@ -26,8 +21,12 @@ public class Nox extends Hero{
             return false;
     }
 
+    @Override
     public int getPotionsCount(){
         return potionsCount;
     }
 
+    public void setPotionsCount(int potionsCount){
+        this.potionsCount = Math.max(0, potionsCount);
+    }
 }

@@ -60,6 +60,12 @@ public class Hero extends Entity {
         return damage;
     }
 
+    public void attack(Enemy enemy){
+        if (enemy != null){
+            enemy.takeDamage(getAttackPower());
+        }
+    }
+
     public boolean useActiveAbility(Entity target){
         if (activeAbility == null){
             return false;

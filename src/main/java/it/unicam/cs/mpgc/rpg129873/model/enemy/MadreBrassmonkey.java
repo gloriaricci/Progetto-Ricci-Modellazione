@@ -7,7 +7,7 @@ public class MadreBrassmonkey extends Enemy {
     private int attackTurns = 0;
 
     public MadreBrassmonkey(){
-        super("boss2", "Madre Brassmonkey", 140, 20,2,"Black screen");
+        super("boss2", "Madre Brassmonkey", 140, 20);
     }
 
     @Override

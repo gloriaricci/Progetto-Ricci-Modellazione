@@ -7,7 +7,7 @@ public class DuchessaDiSangue extends Enemy {
     private int turnCounter;
 
     public DuchessaDiSangue(){
-        super("boss4", "Duchessa di Sangue", 220, 30, 4, "Life steal");
+        super("boss4", "Duchessa di Sangue", 220, 30);
     }
 
     @Override

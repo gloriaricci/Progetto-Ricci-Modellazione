@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg129873.reward.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class LevelFactory {
+public class LevelFactory implements LevelProvider{
 
     private static final List<Supplier<Level>> LEVELS = List.of(
             () -> new Level(1, List.of(new CollezionistaDiOssa()), new RewardScattoRapido()),
@@ -18,14 +18,16 @@ public class LevelFactory {
             () -> new Level(5, List.of(new BaroneShimmer()), new RewardNessuna())
     );
 
-    public static Level createLevel(int number) {
+    @Override
+    public Level createLevel(int number) {
         if (number < 1 || number > LEVELS.size()) {
             throw new IllegalArgumentException("Invalid level: " + number);
         }
         return LEVELS.get(number - 1).get();
     }
 
-    public static int getTotalLevels() {
+    @Override
+    public int getTotalLevels() {
         return LEVELS.size();
     }
 }

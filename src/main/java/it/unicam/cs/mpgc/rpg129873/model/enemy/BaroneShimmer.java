@@ -6,10 +6,10 @@ import it.unicam.cs.mpgc.rpg129873.model.Hero;
 public class BaroneShimmer extends Enemy {
 
     private int turnCounter = 0;
-    private int healAmount = 20;
+    private final int healAmount = 20;
 
     public BaroneShimmer(){
-        super("bossFinale", "Barone dello Shimmer", 300, 35, 5, "Time distortion");
+        super("bossFinale", "Barone dello Shimmer", 300, 35);
     }
 
     @Override
