@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group = 'org.example'
@@ -8,6 +9,11 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+javafx {
+    version = '25'
+    modules = ['javafx.controls']
 }
 
 dependencies {
@@ -19,7 +25,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'it.unicam.cs.mpgc.rpg129873.Main'
+    mainClass = 'it.unicam.cs.mpgc.rpg129873.view.Launcher'
 }
 
 run {
