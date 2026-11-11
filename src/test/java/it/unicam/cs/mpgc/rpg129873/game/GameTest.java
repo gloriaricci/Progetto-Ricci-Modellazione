@@ -159,6 +159,48 @@ class GameTest {
         assertEquals(100, game.snapshot().currentHp());
     }
 
+    @Test
+    void statusDescribesHeroAndEnemy() {
+        Game game = singleEnemyGame(60, 5);
+
+        game.playerAttack();
+        GameStatus status = game.status();
+
+        assertEquals(1, status.levelNumber());
+        assertEquals("Nox", status.heroName());
+        assertEquals(95, status.heroHp());
+        assertEquals(100, status.heroMaxHp());
+        assertEquals(2, status.potions());
+        assertFalse(status.abilityAvailable());
+        assertEquals("Mostro", status.enemyName());
+        assertEquals(45, status.enemyHp());
+        assertEquals(60, status.enemyMaxHp());
+        assertFalse(status.finished());
+        assertFalse(status.won());
+    }
+
+    @Test
+    void statusReportsVictory() {
+        Game game = singleEnemyGame(15, 5);
+
+        game.playerAttack();
+
+        assertTrue(game.status().finished());
+        assertTrue(game.status().won());
+        assertTrue(game.isWon());
+    }
+
+    @Test
+    void statusReportsDefeat() {
+        Game game = singleEnemyGame(1000, 100);
+
+        game.playerAttack();
+
+        assertTrue(game.status().finished());
+        assertFalse(game.status().won());
+        assertFalse(game.isWon());
+    }
+
     private static class FakeLevelProvider implements LevelProvider {
 
         private final List<Supplier<Level>> levels;

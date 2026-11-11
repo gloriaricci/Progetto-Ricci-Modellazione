@@ -76,6 +76,10 @@ public class Game {
         return !player.isAlive() || !getCurrentEnemy().isAlive();
     }
 
+    public boolean isWon() {
+        return isFinished() && player.isAlive();
+    }
+
     public Enemy getCurrentEnemy() {
         return level.getCurrentEnemy();
     }
@@ -86,6 +90,23 @@ public class Game {
 
     public GameState snapshot() {
         return new GameState(currentLevelNumber, player.getCurrentHp(), potions.getPotionsCount());
+    }
+
+    public GameStatus status() {
+        Enemy enemy = getCurrentEnemy();
+        return new GameStatus(
+                currentLevelNumber,
+                player.getName(),
+                player.getCurrentHp(),
+                player.getMaxHp(),
+                potions.getPotionsCount(),
+                player.hasActiveAbility(),
+                enemy.getId(),
+                enemy.getName(),
+                enemy.getCurrentHp(),
+                enemy.getMaxHp(),
+                isFinished(),
+                isWon());
     }
 
     private void endTurn() {
