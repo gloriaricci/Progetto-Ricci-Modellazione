@@ -2,6 +2,8 @@ package it.unicam.cs.mpgc.rpg129873.view;
 
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
+import it.unicam.cs.mpgc.rpg129873.view.component.HealthBar;
+import it.unicam.cs.mpgc.rpg129873.view.component.PotionIndicator;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,7 +13,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.Objects;
@@ -19,46 +24,67 @@ import java.util.Objects;
 public class GameView {
 
     private static final double ENEMY_DELAY_MS = 700;
+    private static final int MAX_POTIONS = 2;
+    private static final double BAR_WIDTH = 240;
+    private static final double BAR_HEIGHT = 24;
+    private static final double SPRITE_SIZE = 160;
+    private static final String ABILITY_STYLE =
+            "-fx-background-color: gold; -fx-text-fill: black; -fx-font-weight: bold;"
+                    + "-fx-border-color: black; -fx-border-width: 3;"
+                    + "-fx-background-radius: 40; -fx-border-radius: 40;";
 
     private final GameController controller;
     private final BorderPane root = new BorderPane();
     private final Label levelLabel = new Label();
-    private final Label heroLabel = new Label();
-    private final Label enemyLabel = new Label();
+    private final Label heroNameLabel = new Label();
+    private final Label enemyNameLabel = new Label();
+    private final HealthBar heroBar = new HealthBar(BAR_WIDTH, BAR_HEIGHT);
+    private final HealthBar enemyBar = new HealthBar(BAR_WIDTH, BAR_HEIGHT);
+    private final PotionIndicator potionIndicator;
     private final Button attackButton = new Button("Attacco");
-    private final Button potionButton = new Button("Pozione");
     private final Button abilityButton = new Button("Abilità");
     private final TextArea log = new TextArea();
     private PauseTransition enemyPause;
 
     public GameView(GameController controller, Runnable onBackToMenu) {
         this.controller = Objects.requireNonNull(controller);
+        this.potionIndicator = new PotionIndicator(MAX_POTIONS, () -> act(controller::onPotion));
 
         attackButton.setOnAction(e -> act(controller::onAttack));
-        potionButton.setOnAction(e -> act(controller::onPotion));
         abilityButton.setOnAction(e -> act(controller::onAbility));
+        abilityButton.setStyle(ABILITY_STYLE);
+        abilityButton.setMinSize(80, 80);
 
         Button menuButton = new Button("Menu");
         menuButton.setOnAction(e -> {
-                    if (enemyPause != null){
-                        enemyPause.stop();
-                    }
-                    onBackToMenu.run();
-                });
+            if (enemyPause != null) {
+                enemyPause.stop();
+            }
+            onBackToMenu.run();
+        });
 
         log.setEditable(false);
         log.setWrapText(true);
+        log.setPrefHeight(110);
 
-        VBox top = new VBox(8, levelLabel, heroLabel, enemyLabel);
-        top.setPadding(new Insets(16));
+        levelLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        BorderPane.setAlignment(levelLabel, Pos.CENTER);
+        BorderPane.setMargin(levelLabel, new Insets(16, 0, 0, 0));
 
-        HBox buttons = new HBox(12, attackButton, potionButton, abilityButton, menuButton);
+        HBox fighters = new HBox(120,
+                fighterPanel(heroNameLabel, heroBar, Color.STEELBLUE),
+                fighterPanel(enemyNameLabel, enemyBar, Color.DARKRED));
+        fighters.setAlignment(Pos.CENTER);
+
+        HBox buttons = new HBox(24, attackButton, potionIndicator, abilityButton, menuButton);
         buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(new Insets(16));
 
-        root.setTop(top);
-        root.setCenter(log);
-        root.setBottom(buttons);
+        VBox bottom = new VBox(12, log, buttons);
+        bottom.setPadding(new Insets(16));
+
+        root.setTop(levelLabel);
+        root.setCenter(fighters);
+        root.setBottom(bottom);
     }
 
     public Parent getRoot() {
@@ -71,20 +97,36 @@ public class GameView {
 
     public void refresh() {
         GameStatus status = controller.getStatus();
-        levelLabel.setText("Livello " + status.levelNumber());
-        heroLabel.setText(status.heroName() + ": " + status.heroHp() + "/" + status.heroMaxHp()
-                + "   Pozioni: " + status.potions());
-        enemyLabel.setText(status.enemyName() + ": " + status.enemyHp() + "/" + status.enemyMaxHp());
-
         boolean locked = status.finished() || controller.isEnemyTurnPending();
-        attackButton.setDisable(status.finished());
-        potionButton.setDisable(status.finished() || status.potions() == 0);
-        abilityButton.setDisable(status.finished() || !status.abilityAvailable());
+
+        levelLabel.setText("Livello " + status.levelNumber());
+        heroNameLabel.setText(status.heroName());
+        enemyNameLabel.setText(status.enemyName());
+        heroBar.update(status.heroHp(), status.heroMaxHp());
+        enemyBar.update(status.enemyHp(), status.enemyMaxHp());
+
+        attackButton.setDisable(locked);
+        potionIndicator.update(status.potions(), !locked);
+
+        abilityButton.setVisible(status.abilityAvailable());
+        abilityButton.setManaged(status.abilityAvailable());
+        abilityButton.setDisable(locked);
     }
 
-    private void scheduleEnemyTurn(){
+    private VBox fighterPanel(Label name, HealthBar bar, Color spriteColor) {
+        Rectangle sprite = new Rectangle(SPRITE_SIZE, SPRITE_SIZE, spriteColor);
+        sprite.setStroke(Color.BLACK);
+        sprite.setStrokeWidth(4);
+        name.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        VBox panel = new VBox(10, name, bar, new StackPane(sprite));
+        panel.setAlignment(Pos.CENTER);
+        return panel;
+    }
+
+    private void scheduleEnemyTurn() {
         enemyPause = new PauseTransition(Duration.millis(ENEMY_DELAY_MS));
-        enemyPause.setOnFinished(e ->{
+        enemyPause.setOnFinished(e -> {
             controller.onEnemyTurn();
             refresh();
         });
@@ -94,7 +136,7 @@ public class GameView {
     private void act(Runnable action) {
         action.run();
         refresh();
-        if (controller.isEnemyTurnPending()){
+        if (controller.isEnemyTurnPending()) {
             scheduleEnemyTurn();
         }
     }
