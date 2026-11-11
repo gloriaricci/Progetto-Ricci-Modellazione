@@ -32,6 +32,14 @@ public class GameController {
         perform(game::playerUseActiveAbility);
     }
 
+    public void onEnemyTurn(){
+        perform(game::enemyTurn);
+    }
+
+    public boolean isEnemyTurnPending(){
+        return game.isEnemyTurnPending();
+    }
+
     public boolean isFinished() {
         return game.isFinished();
     }
@@ -43,7 +51,9 @@ public class GameController {
     private void perform(Runnable action) {
         int levelBefore = game.getCurrentLevelNumber();
         action.run();
-        if (!game.isFinished() && game.getCurrentLevelNumber() != levelBefore) {
+        if (game.isWon()){
+            repository.clear();
+        }else if(!game.isFinished() && game.getCurrentLevelNumber() != levelBefore){
             repository.save(game.snapshot());
         }
     }

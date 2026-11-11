@@ -14,3 +14,4 @@ public record GameStatus(
         boolean finished,
         boolean won) {
 }
+

@@ -32,7 +32,7 @@ class GameControllerTest {
 
         controller.onAttack();
 
-        assertEquals(Optional.of(new GameState(2, 100, 2)), repository.load());
+        assertEquals(Optional.of(new GameState(2, 140, 2)), repository.load());
     }
 
     @Test
@@ -65,6 +65,8 @@ class GameControllerTest {
                 () -> new Level(1, List.of(new Enemy("a", "Goblin", 1000, 100)), hero -> { })));
 
         controller.onAttack();
+        assertTrue(controller.isEnemyTurnPending());
+        controller.onEnemyTurn();
 
         assertTrue(controller.isFinished());
         assertFalse(controller.getStatus().won());

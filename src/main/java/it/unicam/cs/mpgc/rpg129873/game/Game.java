@@ -14,17 +14,21 @@ public class Game {
     private final Hero player;
     private final PotionHolder potions;
     private final LevelProvider levelProvider;
+    private final HealthProgression progression;
     private final GameEventListener listener;
     private Level level;
     private int currentLevelNumber;
+    private boolean enemyTurnPending = false;
 
     public <T extends Hero & PotionHolder> Game(T player,
                                                 LevelProvider levelProvider,
+                                                HealthProgression progression,
                                                 int startingLevel,
                                                 GameEventListener listener) {
         this.player = Objects.requireNonNull(player);
         this.potions = player;
         this.levelProvider = Objects.requireNonNull(levelProvider);
+        this.progression = Objects.requireNonNull(progression);
         this.listener = Objects.requireNonNull(listener);
         this.currentLevelNumber = startingLevel;
         this.level = levelProvider.createLevel(startingLevel);
@@ -35,16 +39,16 @@ public class Game {
     }
 
     public void playerAttack() {
-        if (isFinished()) {
+        if (!canPlayerAct()) {
             return;
         }
         player.onTurnStart();
         player.attack(getCurrentEnemy());
-        endTurn();
+        afterPlayerAction();
     }
 
     public void playerUsePotion() {
-        if (isFinished()) {
+        if (!canPlayerAct()) {
             return;
         }
         if (player.getCurrentHp() == player.getMaxHp()) {
@@ -56,11 +60,11 @@ public class Game {
             return;
         }
         listener.onMessage("Hai usato una pozione. Pozioni rimanenti: " + potions.getPotionsCount());
-        endTurn();
+        afterPlayerAction();
     }
 
     public void playerUseActiveAbility() {
-        if (isFinished()) {
+        if (!canPlayerAct()) {
             return;
         }
         if (!player.hasActiveAbility()) {
@@ -69,7 +73,22 @@ public class Game {
         }
         player.onTurnStart();
         player.useActiveAbility(getCurrentEnemy());
-        endTurn();
+        afterPlayerAction();
+    }
+
+    public void enemyTurn() {
+        if (!enemyTurnPending) {
+            return;
+        }
+        enemyTurnPending = false;
+        Enemy enemy = getCurrentEnemy();
+        enemy.attack(player);
+        enemy.consumeEvent().ifPresent(listener::onMessage);
+        checkGameState();
+    }
+
+    public boolean isEnemyTurnPending() {
+        return enemyTurnPending;
     }
 
     public boolean isFinished() {
@@ -109,13 +128,16 @@ public class Game {
                 isWon());
     }
 
-    private void endTurn() {
-        Enemy enemy = getCurrentEnemy();
-        if (enemy.isAlive()) {
-            enemy.attack(player);
-            enemy.consumeEvent().ifPresent(listener::onMessage);
+    private boolean canPlayerAct() {
+        return !isFinished() && !enemyTurnPending;
+    }
+
+    private void afterPlayerAction() {
+        if (!player.isAlive() || !getCurrentEnemy().isAlive()) {
+            checkGameState();
+        } else {
+            enemyTurnPending = true;
         }
-        checkGameState();
     }
 
     private void checkGameState() {
@@ -140,11 +162,17 @@ public class Game {
         if (currentLevelNumber < levelProvider.getTotalLevels()) {
             currentLevelNumber++;
             level = levelProvider.createLevel(currentLevelNumber);
+            applyProgression();
             announceLevel();
         } else {
             listener.onMessage("COMPLIMENTI! Hai sconfitto il Barone dello Shimmer "
                     + "e liberato la città. Hai vinto il gioco!");
         }
+    }
+
+    private void applyProgression() {
+        player.setMaxHp(progression.maxHpForLevel(currentLevelNumber));
+        player.setCurrentHp(player.getMaxHp());
     }
 
     private void announceLevel() {

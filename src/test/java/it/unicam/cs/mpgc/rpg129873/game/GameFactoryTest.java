@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GameFactoryTest {
 
@@ -50,5 +50,31 @@ class GameFactoryTest {
         game.playerUseActiveAbility();
 
         assertEquals(240, game.getCurrentEnemy().getCurrentHp());
+    }
+
+    @Test
+    void newGameStartsWithTheMaxHpOfLevelOne() {
+        Game game = factory.newGame();
+        assertEquals(100, game.status().heroMaxHp());
+    }
+
+    @Test
+    void restoreUsesTheMaxHpOfTheRestoredLevel() {
+        Game game = factory.restore(new GameState(5, 200, 2));
+
+        assertEquals(260, game.status().heroMaxHp());
+        assertEquals(200, game.status().heroHp());
+    }
+
+    @Test
+    void finalBossIsBeatableWithTheAbilityAloneAndNoPotions(){
+        Game game = factory.restore(new GameState(5,260,0));
+
+        while(!game.isFinished()){
+            game.playerUseActiveAbility();
+            game.enemyTurn();
+        }
+
+        assertTrue(game.isWon());
     }
 }
