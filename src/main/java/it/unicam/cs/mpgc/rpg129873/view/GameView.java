@@ -24,6 +24,7 @@ import java.util.Objects;
 public class GameView {
 
     private static final double ENEMY_DELAY_MS = 700;
+    private static final double END_DELAY_MS = 1500;
     private static final int MAX_POTIONS = 2;
     private static final double BAR_WIDTH = 240;
     private static final double BAR_HEIGHT = 24;
@@ -34,6 +35,7 @@ public class GameView {
                     + "-fx-background-radius: 40; -fx-border-radius: 40;";
 
     private final GameController controller;
+    private final Runnable onFinished;
     private final BorderPane root = new BorderPane();
     private final Label levelLabel = new Label();
     private final Label heroNameLabel = new Label();
@@ -45,9 +47,12 @@ public class GameView {
     private final Button abilityButton = new Button("Abilità");
     private final TextArea log = new TextArea();
     private PauseTransition enemyPause;
+    private PauseTransition endPause;
+    private boolean endScheduled = false;
 
-    public GameView(GameController controller, Runnable onBackToMenu) {
+    public GameView(GameController controller, Runnable onBackToMenu, Runnable onFinished) {
         this.controller = Objects.requireNonNull(controller);
+        this.onFinished = Objects.requireNonNull(onFinished);
         this.potionIndicator = new PotionIndicator(MAX_POTIONS, () -> act(controller::onPotion));
 
         attackButton.setOnAction(e -> act(controller::onAttack));
@@ -57,9 +62,7 @@ public class GameView {
 
         Button menuButton = new Button("Menu");
         menuButton.setOnAction(e -> {
-            if (enemyPause != null) {
-                enemyPause.stop();
-            }
+            stopPauses();
             onBackToMenu.run();
         });
 
@@ -111,6 +114,11 @@ public class GameView {
         abilityButton.setVisible(status.abilityAvailable());
         abilityButton.setManaged(status.abilityAvailable());
         abilityButton.setDisable(locked);
+
+        if (status.finished() && !endScheduled){
+            endScheduled = true;
+            scheduleEnd();
+        }
     }
 
     private VBox fighterPanel(Label name, HealthBar bar, Color spriteColor) {
@@ -131,6 +139,21 @@ public class GameView {
             refresh();
         });
         enemyPause.play();
+    }
+
+    private void scheduleEnd() {
+        endPause = new PauseTransition(Duration.millis(END_DELAY_MS));
+        endPause.setOnFinished(e -> onFinished.run());
+        endPause.play();
+    }
+
+    private void stopPauses() {
+        if (enemyPause != null) {
+            enemyPause.stop();
+        }
+        if (endPause != null) {
+            endPause.stop();
+        }
     }
 
     private void act(Runnable action) {

@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.Game;
 import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
 import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
+import javafx.scene.paint.Color;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -43,11 +44,19 @@ public class AppNavigator {
 
     private void startGame(Game game) {
         GameController controller = new GameController(game, repository);
-        GameView view = new GameView(controller, this::showMenu);
+        GameView view = new GameView(controller, this::showMenu,
+                () -> showEnd(controller.getStatus().won()));
         listener.setHandler(view::appendMessage);
         controller.start();
         view.refresh();
         show(view.getRoot());
+    }
+
+    private void showEnd(boolean won){
+        EndView ens = won
+                ? new EndView("Vittoria!", "Nox, hai sconfitto il barone dello shimmer e liberato la città!", Color.GOLD, this::showMenu)
+                : new EndView("GAME OVER", "Nox, sei stato sconfitto! Riprova dall'inizio del gioco.", Color.CRIMSON, this::showMenu);
+        show(ens.getRoot());
     }
 
     private void show(Parent root) {
