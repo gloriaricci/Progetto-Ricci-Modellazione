@@ -1,16 +1,30 @@
 package it.unicam.cs.mpgc.rpg129873.view;
 
+import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
+import it.unicam.cs.mpgc.rpg129873.level.LevelFactory;
+import it.unicam.cs.mpgc.rpg129873.level.LevelProvider;
+import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
+import it.unicam.cs.mpgc.rpg129873.persistence.JsonGameRepository;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.nio.file.Path;
+
 public class NoxApp extends Application {
 
     @Override
     public void start(Stage stage) {
+        GuiEventListener listener = new GuiEventListener();
+        LevelProvider levels = new LevelFactory();
+        GameRepository repository = new JsonGameRepository(Path.of("nox-save.json"));
+        GameFactory factory = new GameFactory(levels,listener);
+
+        AppNavigator navigator = new AppNavigator(stage, repository, factory, listener);
+
         stage.setTitle("Nox");
-        stage.setScene(new Scene(new Label("JavaFX funziona!"), 400, 200));
+        navigator.showMenu();
         stage.show();
     }
 }
