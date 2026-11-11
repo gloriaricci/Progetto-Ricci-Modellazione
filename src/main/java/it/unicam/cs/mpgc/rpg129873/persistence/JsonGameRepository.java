@@ -45,5 +45,14 @@ public class JsonGameRepository implements GameRepository{
             return Optional.empty();
         }
     }
+
+    @Override
+    public void clear(){
+        try{
+            Files.deleteIfExists(file);
+        }catch(IOException e){
+            throw new UncheckedIOException(e);
+        }
+    }
 }
 

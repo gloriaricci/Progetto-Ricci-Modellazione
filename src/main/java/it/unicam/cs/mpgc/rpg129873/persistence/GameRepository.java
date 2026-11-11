@@ -9,4 +9,6 @@ public interface GameRepository {
     void save(GameState state);
 
     Optional<GameState> load();
+
+    void clear();
 }

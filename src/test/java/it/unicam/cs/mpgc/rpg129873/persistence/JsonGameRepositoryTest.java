@@ -55,4 +55,19 @@ class JsonGameRepositoryTest {
 
         assertTrue(repository.load().isEmpty());
     }
+
+    @Test
+    void clearRemovesTheSavedState() {
+        repository.save(new GameState(3, 70, 1));
+
+        repository.clear();
+
+        assertFalse(Files.exists(file));
+        assertTrue(repository.load().isEmpty());
+    }
+
+    @Test
+    void clearWithoutASaveFileDoesNothing() {
+        assertDoesNotThrow(() -> repository.clear());
+    }
 }
