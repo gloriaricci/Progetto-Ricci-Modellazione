@@ -1,7 +1,5 @@
 package it.unicam.cs.mpgc.rpg129873.game;
 
-import it.unicam.cs.mpgc.rpg129873.model.enemy.BaroneShimmer;
-
 public class LinearHealthProgression implements HealthProgression{
 
     private static final int BASE_HP = 100;
