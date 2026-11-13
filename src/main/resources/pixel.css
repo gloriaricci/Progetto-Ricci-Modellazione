@@ -19,7 +19,8 @@
     -fx-text-fill: lightgray;
 }
 
-.text-area {
-    -fx-control-inner-background: rgba(0, 0, 0, 0.65);
+.log-line {
+    -fx-font-size: 10px;
     -fx-text-fill: white;
+    -fx-effect: dropshadow(one-pass-box, black, 2, 1.0, 1, 1);
 }

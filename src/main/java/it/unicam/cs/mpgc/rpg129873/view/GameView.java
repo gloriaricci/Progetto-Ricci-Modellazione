@@ -8,6 +8,7 @@ import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
 import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
 import it.unicam.cs.mpgc.rpg129873.view.component.HealthBar;
 import it.unicam.cs.mpgc.rpg129873.view.component.LevelBackground;
+import it.unicam.cs.mpgc.rpg129873.view.component.MessageLog;
 import it.unicam.cs.mpgc.rpg129873.view.component.OverlayView;
 import it.unicam.cs.mpgc.rpg129873.view.component.PotionIndicator;
 import javafx.animation.Animation;
@@ -17,7 +18,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -35,6 +35,7 @@ public class GameView {
     private static final double ENEMY_DELAY_MS = 700;
     private static final double END_DELAY_MS = 1500;
     private static final int MAX_POTIONS = 2;
+    private static final int MAX_LOG_LINES = 3;
     private static final double BAR_WIDTH = 240;
     private static final double BAR_HEIGHT = 24;
     private static final double SPRITE_SIZE = 160;
@@ -60,7 +61,7 @@ public class GameView {
     private final PotionIndicator potionIndicator;
     private final Button attackButton = new Button("Attacco");
     private final Button abilityButton = new Button("Abilità");
-    private final TextArea log = new TextArea();
+    private final MessageLog log = new MessageLog(MAX_LOG_LINES);
     private PauseTransition enemyPause;
     private PauseTransition endPause;
     private boolean endScheduled = false;
@@ -83,11 +84,6 @@ public class GameView {
             stopPauses();
             onBackToMenu.run();
         });
-
-        log.setEditable(false);
-        log.setWrapText(true);
-        log.setPrefHeight(110);
-        log.setStyle("-fx-font-size: 10px;");
 
         levelLabel.setStyle("-fx-font-size: 16px;");
         BorderPane.setAlignment(levelLabel, Pos.CENTER);
@@ -116,7 +112,7 @@ public class GameView {
     }
 
     public void onEvent(GameEvent event) {
-        appendLog(formatter.format(event));
+        log.add(formatter.format(event));
         if (formatter.isAnnouncement(event)) {
             announcements.add(formatter.toAnnouncement(event));
             if (!overlay.isShowing()) {
@@ -149,10 +145,6 @@ public class GameView {
             endScheduled = true;
             scheduleEnd();
         }
-    }
-
-    private void appendLog(String message) {
-        log.appendText(message + System.lineSeparator());
     }
 
     private void showNextAnnouncement() {
