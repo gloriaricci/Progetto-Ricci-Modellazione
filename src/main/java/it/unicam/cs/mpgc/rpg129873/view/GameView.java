@@ -78,8 +78,11 @@ public class GameView {
         abilityButton.setOnAction(e -> act(controller::onAbility));
         abilityButton.setStyle(ABILITY_STYLE);
         abilityButton.setMinSize(ABILITY_BUTTON_SIZE, ABILITY_BUTTON_SIZE);
+        attackButton.getStyleClass().add("pixel-button");
+        attackButton.getStyleClass().add("attack-button");
 
         Button menuButton = new Button("Menu");
+        menuButton.getStyleClass().add("pixel-button");
         menuButton.setOnAction(e -> {
             stopPauses();
             onBackToMenu.run();

@@ -2,6 +2,10 @@
 .root {
     -fx-font-family: "Press Start 2P", "Monospaced";
     -fx-font-size: 12px;
+    -nox-viola: #9e14c5;
+    -nox-fucsia: #fd3ddd;
+    -nox-ciano: #4df0ff;
+    -nox-nemico: #6603cc;
 }
 
 .menu-title {
@@ -10,10 +14,10 @@
     -fx-effect: dropshadow(one-pass-box, black, 2, 1.0, 2, 2);
 }
 
-.menu-button {
+.pixel-button {
     -fx-background-color: rgba(20, 0, 35, 0.8);
     -fx-background-radius: 0;
-    -fx-border-color: #9e14c5;
+    -fx-border-color: #9e14c;
     -fx-border-width: 3;
     -fx-border-radius: 0;
     -fx-text-fill: white;
@@ -21,19 +25,23 @@
     -fx-cursor: hand;
 }
 
-.menu-button:hover,
-.menu-button:focused {
+.pixel-button:hover,
+.pixel-button:focused {
     -fx-border-color: #fd3ddd;
     -fx-text-fill: #fd3ddd;
 }
 
-.menu-button:disabled {
+.pixel-button:disabled {
     -fx-opacity: 0.4;
+}
+
+.attack-button {
+    -fx-border-color: #fd3ddd;
 }
 
 .level-label {
     -fx-font-size: 16px;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #fd3ddd;
     -fx-effect: dropshadow(one-pass-box, black, 2, 1.0, 2, 2);
 }
 

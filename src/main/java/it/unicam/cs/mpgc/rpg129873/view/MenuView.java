@@ -14,10 +14,11 @@ import java.util.Objects;
 public class MenuView {
 
     private static final int MENU_BACKGROUND_LEVEL = 1;
+
     private final StackPane root = new StackPane();
 
-    public MenuView(boolean hasSave, BackgroundProvider backgrounds, Runnable onPlay, Runnable onRestart){
-
+    public MenuView(boolean hasSave, BackgroundProvider backgrounds,
+                    Runnable onPlay, Runnable onRestart) {
         Objects.requireNonNull(backgrounds);
         Objects.requireNonNull(onPlay);
         Objects.requireNonNull(onRestart);
@@ -25,16 +26,15 @@ public class MenuView {
         LevelBackground background = new LevelBackground(backgrounds);
         background.setLevel(MENU_BACKGROUND_LEVEL);
 
-
         Label title = new Label("Benvenuto nel gioco");
         title.getStyleClass().add("menu-title");
 
         Button playButton = new Button("Inizia a giocare");
-        playButton.getStyleClass().add("menu-button");
+        playButton.getStyleClass().add("pixel-button");
         playButton.setOnAction(e -> onPlay.run());
 
         Button restartButton = new Button("Ricomincia il gioco");
-        restartButton.getStyleClass().add("menu-button");
+        restartButton.getStyleClass().add("pixel-button");
         restartButton.setDisable(!hasSave);
         restartButton.setOnAction(e -> onRestart.run());
 
@@ -44,7 +44,7 @@ public class MenuView {
         root.getChildren().addAll(background, content);
     }
 
-    public Parent getRoot(){
+    public Parent getRoot() {
         return root;
     }
 }
