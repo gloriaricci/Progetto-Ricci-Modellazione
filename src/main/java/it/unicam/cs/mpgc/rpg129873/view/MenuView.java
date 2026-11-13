@@ -8,11 +8,11 @@ import javafx.scene.layout.VBox;
 
 public class MenuView {
 
-    private final VBox root = new VBox(20);
+    private final VBox root = new VBox(28);
 
     public MenuView(boolean hasSave, Runnable onPlay, Runnable onRestart){
         Label title = new Label("Benvenuto nel gioco");
-        title.setStyle("-fx-font-size: 32px;");
+        title.setStyle("-fx-font-size: 24px;");
 
         Button playButton = new Button("Inizia a giocare");
         playButton.setOnAction(e -> onPlay.run());

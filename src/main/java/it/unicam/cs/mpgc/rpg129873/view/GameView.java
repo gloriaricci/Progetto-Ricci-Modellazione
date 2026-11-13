@@ -36,10 +36,11 @@ public class GameView {
     private static final double BAR_WIDTH = 240;
     private static final double BAR_HEIGHT = 24;
     private static final double SPRITE_SIZE = 160;
+    private static final double ABILITY_BUTTON_SIZE = 100;
     private static final String ABILITY_STYLE =
-            "-fx-background-color: gold; -fx-text-fill: black; -fx-font-weight: bold;"
+            "-fx-background-color: gold; -fx-text-fill: black; -fx-font-size: 10px;"
                     + "-fx-border-color: black; -fx-border-width: 3;"
-                    + "-fx-background-radius: 40; -fx-border-radius: 40;";
+                    + "-fx-background-radius: 50; -fx-border-radius: 50;";
 
     private final GameController controller;
     private final Runnable onFinished;
@@ -70,7 +71,7 @@ public class GameView {
         attackButton.setOnAction(e -> act(controller::onAttack));
         abilityButton.setOnAction(e -> act(controller::onAbility));
         abilityButton.setStyle(ABILITY_STYLE);
-        abilityButton.setMinSize(80, 80);
+        abilityButton.setMinSize(ABILITY_BUTTON_SIZE, ABILITY_BUTTON_SIZE);
 
         Button menuButton = new Button("Menu");
         menuButton.setOnAction(e -> {
@@ -81,8 +82,9 @@ public class GameView {
         log.setEditable(false);
         log.setWrapText(true);
         log.setPrefHeight(110);
+        log.setStyle("-fx-font-size: 10px;");
 
-        levelLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        levelLabel.setStyle("-fx-font-size: 16px;");
         BorderPane.setAlignment(levelLabel, Pos.CENTER);
         BorderPane.setMargin(levelLabel, new Insets(16, 0, 0, 0));
 
@@ -161,7 +163,7 @@ public class GameView {
         Rectangle sprite = new Rectangle(SPRITE_SIZE, SPRITE_SIZE, spriteColor);
         sprite.setStroke(Color.BLACK);
         sprite.setStrokeWidth(4);
-        name.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        name.setStyle("-fx-font-size: 12px;");
 
         VBox panel = new VBox(10, name, bar, new StackPane(sprite));
         panel.setAlignment(Pos.CENTER);

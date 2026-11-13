@@ -1,0 +1,20 @@
+
+.root {
+    -fx-font-family: "Press Start 2P", "Monospaced";
+    -fx-font-size: 12px;
+}
+
+.overlay-title {
+    -fx-font-size: 28px;
+    -fx-text-fill: white;
+}
+
+.overlay-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+}
+
+.overlay-hint {
+    -fx-font-size: 10px;
+    -fx-text-fill: lightgray;
+}

@@ -28,7 +28,7 @@ public class HealthBar extends StackPane {
         StackPane.setAlignment(fill, Pos.CENTER_LEFT);
         StackPane.setMargin(fill, new Insets(0, 0, 0, BORDER));
 
-        text.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        text.setStyle("-fx-text-fill: white; -fx-font-size: 10px;");
 
         setMinSize(width, height);
         setMaxSize(width, height);

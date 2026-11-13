@@ -5,7 +5,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 import java.util.Objects;
@@ -13,9 +12,6 @@ import java.util.Objects;
 public class OverlayView extends StackPane {
 
     private static final String BACKGROUND = "-fx-background-color: rgba(0, 0, 0, 0.78);";
-    private static final String TITLE_STYLE = "-fx-font-size: 56px; -fx-font-weight: bold;";
-    private static final String SUBTITLE_STYLE = "-fx-font-size: 28px;";
-    private static final String HINT_STYLE = "-fx-font-size: 16px;";
     private static final double MAX_TEXT_WIDTH = 800;
 
     private final Label title = new Label();
@@ -25,15 +21,14 @@ public class OverlayView extends StackPane {
     public OverlayView(Runnable onClosed) {
         this.onClosed = Objects.requireNonNull(onClosed);
 
-        configure(title, TITLE_STYLE);
-        configure(subtitle, SUBTITLE_STYLE);
+        configure(title, "overlay-title");
+        configure(subtitle, "overlay-subtitle");
 
-        VBox texts = new VBox(16, title, subtitle);
+        VBox texts = new VBox(24, title, subtitle);
         texts.setAlignment(Pos.CENTER);
 
         Label hint = new Label("Clicca per continuare");
-        hint.setStyle(HINT_STYLE);
-        hint.setTextFill(Color.LIGHTGRAY);
+        hint.getStyleClass().add("overlay-hint");
         StackPane.setAlignment(hint, Pos.BOTTOM_CENTER);
         StackPane.setMargin(hint, new Insets(0, 0, 32, 0));
 
@@ -64,9 +59,8 @@ public class OverlayView extends StackPane {
         onClosed.run();
     }
 
-    private void configure(Label label, String style) {
-        label.setStyle(style);
-        label.setTextFill(Color.WHITE);
+    private void configure(Label label, String styleClass) {
+        label.getStyleClass().add(styleClass);
         label.setWrapText(true);
         label.setMaxWidth(MAX_TEXT_WIDTH);
         label.setTextAlignment(TextAlignment.CENTER);
