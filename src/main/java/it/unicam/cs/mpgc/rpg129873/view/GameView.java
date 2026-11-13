@@ -85,13 +85,13 @@ public class GameView {
             onBackToMenu.run();
         });
 
-        levelLabel.setStyle("-fx-font-size: 16px;");
+        levelLabel.getStyleClass().add("level-label");
         BorderPane.setAlignment(levelLabel, Pos.CENTER);
         BorderPane.setMargin(levelLabel, new Insets(16, 0, 0, 0));
 
         HBox fighters = new HBox(120,
-                fighterPanel(heroNameLabel, heroBar, Color.STEELBLUE),
-                fighterPanel(enemyNameLabel, enemyBar, Color.DARKRED));
+                fighterPanel(heroNameLabel, heroBar, Color.STEELBLUE, "hero-name"),
+                fighterPanel(enemyNameLabel, enemyBar, Color.DARKRED, "enemy-name"));
         fighters.setAlignment(Pos.CENTER);
 
         HBox buttons = new HBox(24, attackButton, potionIndicator, abilityButton, menuButton);
@@ -157,11 +157,11 @@ public class GameView {
         }
     }
 
-    private VBox fighterPanel(Label name, HealthBar bar, Color spriteColor) {
+    private VBox fighterPanel(Label name, HealthBar bar, Color spriteColor, String nameStyleClass) {
         Rectangle sprite = new Rectangle(SPRITE_SIZE, SPRITE_SIZE, spriteColor);
         sprite.setStroke(Color.BLACK);
         sprite.setStrokeWidth(4);
-        name.setStyle("-fx-font-size: 12px;");
+        name.getStyleClass().add(nameStyleClass);
 
         VBox panel = new VBox(10, name, bar, new StackPane(sprite));
         panel.setAlignment(Pos.CENTER);
@@ -203,3 +203,4 @@ public class GameView {
         scheduleEnemyTurnIfNeeded();
     }
 }
+
