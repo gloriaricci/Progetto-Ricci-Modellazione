@@ -27,6 +27,24 @@ public class EventTextFormatter {
         };
     }
 
+    public boolean isAnnouncement(GameEvent event){
+        return switch (event) {
+            case LevelStarted _, RewardGained _, EnemyArrived _ -> true;
+            case EnemyDefeated _, HeroAttacked _, AbilityUsed _, RecoilTaken _,
+                 HeroHealed _, PotionUsed _, ActionRefused _, EnemyAttacked _,
+                 EnemySpecial _, HeroDefeated _, GameWon _ -> false;
+        };
+    }
+
+    public Announcement toAnnouncement(GameEvent event) {
+        return switch (event) {
+            case LevelStarted e -> new Announcement("Livello " + e.level(), e.enemyName());
+            case RewardGained e -> new Announcement(rewardText(e), "");
+            case EnemyArrived e -> new Announcement(format(e), "");
+            default -> throw new IllegalArgumentException("Not an announcement: " + event);
+        };
+    }
+
     private String refusalText(RefusalReason reason) {
         return switch (reason) {
             case FULL_HP -> "La tua vita è già al massimo.";

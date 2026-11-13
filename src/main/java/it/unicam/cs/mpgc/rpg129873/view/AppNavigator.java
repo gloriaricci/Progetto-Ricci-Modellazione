@@ -48,7 +48,7 @@ public class AppNavigator {
         GameController controller = new GameController(game, repository);
         GameView view = new GameView(controller, this::showMenu,
                 () -> showEnd(controller.getStatus().won()));
-        listener.setHandler(event -> view.appendMessage(formatter.format(event)));
+        listener.setHandler(view::onEvent);
         controller.start();
         view.refresh();
         show(view.getRoot());
@@ -57,7 +57,7 @@ public class AppNavigator {
     private void showEnd(boolean won) {
         EndView end = won
                 ? new EndView("Vittoria!",
-                "Nox, hai sconfitto il barone dello shimmer e liberato la città!",
+                "Nox, hai sconfitto il Barone dello Shimmer e liberato la città!",
                 Color.GOLD, this::showMenu)
                 : new EndView("GAME OVER",
                 "Nox, sei stato sconfitto! Riprova dall'inizio del livello.",

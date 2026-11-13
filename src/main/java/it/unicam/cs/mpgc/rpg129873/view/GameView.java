@@ -1,9 +1,14 @@
 package it.unicam.cs.mpgc.rpg129873.view;
 
+import it.unicam.cs.mpgc.rpg129873.controller.Announcement;
+import it.unicam.cs.mpgc.rpg129873.controller.EventTextFormatter;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent;
 import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
 import it.unicam.cs.mpgc.rpg129873.view.component.HealthBar;
+import it.unicam.cs.mpgc.rpg129873.view.component.OverlayView;
 import it.unicam.cs.mpgc.rpg129873.view.component.PotionIndicator;
+import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,7 +24,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.util.ArrayDeque;
 import java.util.Objects;
+import java.util.Queue;
 
 public class GameView {
 
@@ -36,7 +43,11 @@ public class GameView {
 
     private final GameController controller;
     private final Runnable onFinished;
-    private final BorderPane root = new BorderPane();
+    private final EventTextFormatter formatter = new EventTextFormatter();
+    private final Queue<Announcement> announcements = new ArrayDeque<>();
+    private final StackPane root = new StackPane();
+    private final BorderPane content = new BorderPane();
+    private final OverlayView overlay;
     private final Label levelLabel = new Label();
     private final Label heroNameLabel = new Label();
     private final Label enemyNameLabel = new Label();
@@ -54,6 +65,7 @@ public class GameView {
         this.controller = Objects.requireNonNull(controller);
         this.onFinished = Objects.requireNonNull(onFinished);
         this.potionIndicator = new PotionIndicator(MAX_POTIONS, () -> act(controller::onPotion));
+        this.overlay = new OverlayView(this::showNextAnnouncement);
 
         attackButton.setOnAction(e -> act(controller::onAttack));
         abilityButton.setOnAction(e -> act(controller::onAbility));
@@ -85,22 +97,32 @@ public class GameView {
         VBox bottom = new VBox(12, log, buttons);
         bottom.setPadding(new Insets(16));
 
-        root.setTop(levelLabel);
-        root.setCenter(fighters);
-        root.setBottom(bottom);
+        content.setTop(levelLabel);
+        content.setCenter(fighters);
+        content.setBottom(bottom);
+
+        root.getChildren().addAll(content, overlay);
     }
 
     public Parent getRoot() {
         return root;
     }
 
-    public void appendMessage(String message) {
-        log.appendText(message + System.lineSeparator());
+    public void onEvent(GameEvent event) {
+        appendLog(formatter.format(event));
+        if (formatter.isAnnouncement(event)) {
+            announcements.add(formatter.toAnnouncement(event));
+            if (!overlay.isShowing()) {
+                showNextAnnouncement();
+            }
+        }
     }
 
     public void refresh() {
         GameStatus status = controller.getStatus();
-        boolean locked = status.finished() || controller.isEnemyTurnPending();
+        boolean locked = status.finished()
+                || controller.isEnemyTurnPending()
+                || overlay.isShowing();
 
         levelLabel.setText("Livello " + status.levelNumber());
         heroNameLabel.setText(status.heroName());
@@ -115,9 +137,23 @@ public class GameView {
         abilityButton.setManaged(status.abilityAvailable());
         abilityButton.setDisable(locked);
 
-        if (status.finished() && !endScheduled){
+        if (status.finished() && !endScheduled) {
             endScheduled = true;
             scheduleEnd();
+        }
+    }
+
+    private void appendLog(String message) {
+        log.appendText(message + System.lineSeparator());
+    }
+
+    private void showNextAnnouncement() {
+        Announcement next = announcements.poll();
+        if (next != null) {
+            overlay.show(next.title(), next.subtitle());
+        } else {
+            refresh();
+            scheduleEnemyTurnIfNeeded();
         }
     }
 
@@ -132,7 +168,12 @@ public class GameView {
         return panel;
     }
 
-    private void scheduleEnemyTurn() {
+    private void scheduleEnemyTurnIfNeeded() {
+        boolean alreadyScheduled = enemyPause != null
+                && enemyPause.getStatus() == Animation.Status.RUNNING;
+        if (!controller.isEnemyTurnPending() || overlay.isShowing() || alreadyScheduled) {
+            return;
+        }
         enemyPause = new PauseTransition(Duration.millis(ENEMY_DELAY_MS));
         enemyPause.setOnFinished(e -> {
             controller.onEnemyTurn();
@@ -159,8 +200,6 @@ public class GameView {
     private void act(Runnable action) {
         action.run();
         refresh();
-        if (controller.isEnemyTurnPending()) {
-            scheduleEnemyTurn();
-        }
+        scheduleEnemyTurnIfNeeded();
     }
 }
