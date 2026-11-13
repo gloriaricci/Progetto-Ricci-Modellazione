@@ -5,7 +5,9 @@ import it.unicam.cs.mpgc.rpg129873.controller.EventTextFormatter;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.GameEvent;
 import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
+import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
 import it.unicam.cs.mpgc.rpg129873.view.component.HealthBar;
+import it.unicam.cs.mpgc.rpg129873.view.component.LevelBackground;
 import it.unicam.cs.mpgc.rpg129873.view.component.OverlayView;
 import it.unicam.cs.mpgc.rpg129873.view.component.PotionIndicator;
 import javafx.animation.Animation;
@@ -48,6 +50,7 @@ public class GameView {
     private final Queue<Announcement> announcements = new ArrayDeque<>();
     private final StackPane root = new StackPane();
     private final BorderPane content = new BorderPane();
+    private final LevelBackground background;
     private final OverlayView overlay;
     private final Label levelLabel = new Label();
     private final Label heroNameLabel = new Label();
@@ -62,9 +65,11 @@ public class GameView {
     private PauseTransition endPause;
     private boolean endScheduled = false;
 
-    public GameView(GameController controller, Runnable onBackToMenu, Runnable onFinished) {
+    public GameView(GameController controller, BackgroundProvider backgrounds,
+                    Runnable onBackToMenu, Runnable onFinished) {
         this.controller = Objects.requireNonNull(controller);
         this.onFinished = Objects.requireNonNull(onFinished);
+        this.background = new LevelBackground(Objects.requireNonNull(backgrounds));
         this.potionIndicator = new PotionIndicator(MAX_POTIONS, () -> act(controller::onPotion));
         this.overlay = new OverlayView(this::showNextAnnouncement);
 
@@ -103,7 +108,7 @@ public class GameView {
         content.setCenter(fighters);
         content.setBottom(bottom);
 
-        root.getChildren().addAll(content, overlay);
+        root.getChildren().addAll(background, content, overlay);
     }
 
     public Parent getRoot() {
@@ -126,6 +131,7 @@ public class GameView {
                 || controller.isEnemyTurnPending()
                 || overlay.isShowing();
 
+        background.setLevel(status.levelNumber());
         levelLabel.setText("Livello " + status.levelNumber());
         heroNameLabel.setText(status.heroName());
         enemyNameLabel.setText(status.enemyName());

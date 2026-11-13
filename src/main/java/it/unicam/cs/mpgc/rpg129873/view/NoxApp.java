@@ -5,7 +5,9 @@ import it.unicam.cs.mpgc.rpg129873.level.LevelFactory;
 import it.unicam.cs.mpgc.rpg129873.level.LevelProvider;
 import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
 import it.unicam.cs.mpgc.rpg129873.persistence.JsonGameRepository;
+import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
 import it.unicam.cs.mpgc.rpg129873.view.component.PixelFont;
+import it.unicam.cs.mpgc.rpg129873.view.component.ResourceBackgroundProvider;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -23,8 +25,9 @@ public class NoxApp extends Application {
         LevelProvider levels = new LevelFactory();
         GameRepository repository = new JsonGameRepository(Path.of("nox-save.json"));
         GameFactory factory = new GameFactory(levels,listener);
+        BackgroundProvider backgrounds = new ResourceBackgroundProvider();
 
-        AppNavigator navigator = new AppNavigator(stage, repository, factory, listener);
+        AppNavigator navigator = new AppNavigator(stage, repository, factory, listener, backgrounds);
 
         stage.setTitle("Nox");
         navigator.showMenu();
