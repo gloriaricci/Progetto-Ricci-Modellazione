@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg129873.game;
 
-import it.unicam.cs.mpgc.rpg129873.controller.GameEventListener;
 import it.unicam.cs.mpgc.rpg129873.level.LevelProvider;
 import it.unicam.cs.mpgc.rpg129873.model.Nox;
 import it.unicam.cs.mpgc.rpg129873.weapon.Pugnale;

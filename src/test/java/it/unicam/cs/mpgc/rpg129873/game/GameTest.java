@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg129873.game;
 
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent.*;
 import it.unicam.cs.mpgc.rpg129873.level.Level;
 import it.unicam.cs.mpgc.rpg129873.level.LevelProvider;
 import it.unicam.cs.mpgc.rpg129873.model.Enemy;
@@ -14,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
 
-    private final List<String> messages = new ArrayList<>();
+    private final List<GameEvent> events = new ArrayList<>();
     private final AtomicBoolean rewardApplied = new AtomicBoolean(false);
 
     private Game newGame(List<Supplier<Level>> levels) {
         LevelProvider provider = new FakeLevelProvider(levels);
-        return new GameFactory(provider, messages::add).newGame();
+        return new GameFactory(provider, events::add).newGame();
     }
 
     private Game singleEnemyGame(int enemyHp, int enemyAttack) {
@@ -27,15 +28,15 @@ class GameTest {
                 () -> new Level(1, List.of(new Enemy("e1", "Mostro", enemyHp, enemyAttack)), hero -> { })));
     }
 
-    private boolean saidSomethingContaining(String fragment) {
-        return messages.stream().anyMatch(m -> m.contains(fragment));
+    private boolean happened(GameEvent event) {
+        return events.contains(event);
     }
 
     @Test
     void startAnnouncesTheFirstLevel() {
         Game game = singleEnemyGame(60, 5);
         game.start();
-        assertTrue(saidSomethingContaining("Inizio Livello 1: Mostro"));
+        assertTrue(happened(new LevelStarted(1, "Mostro")));
     }
 
     @Test
@@ -58,6 +59,25 @@ class GameTest {
 
         assertEquals(95, game.snapshot().currentHp());
         assertFalse(game.isEnemyTurnPending());
+    }
+
+    @Test
+    void attackReportsTheDamageDealt() {
+        Game game = singleEnemyGame(60, 5);
+
+        game.playerAttack();
+
+        assertTrue(happened(new HeroAttacked("Nox", "Mostro", 15)));
+    }
+
+    @Test
+    void enemyReplyReportsTheDamageTaken() {
+        Game game = singleEnemyGame(60, 5);
+
+        game.playerAttack();
+        game.enemyTurn();
+
+        assertTrue(happened(new EnemyAttacked("Mostro", 5)));
     }
 
     @Test
@@ -143,21 +163,21 @@ class GameTest {
         game.playerAttack();
 
         assertTrue(game.isFinished());
-        assertTrue(saidSomethingContaining("Hai vinto"));
+        assertTrue(happened(new GameWon()));
     }
 
     @Test
     void nothingHappensAfterTheGameIsFinished() {
         Game game = singleEnemyGame(15, 5);
         game.playerAttack();
-        int messagesAtTheEnd = messages.size();
+        int eventsAtTheEnd = events.size();
 
         game.playerAttack();
         game.playerUsePotion();
         game.playerUseActiveAbility();
         game.enemyTurn();
 
-        assertEquals(messagesAtTheEnd, messages.size());
+        assertEquals(eventsAtTheEnd, events.size());
     }
 
     @Test
@@ -168,7 +188,7 @@ class GameTest {
         game.enemyTurn();
 
         assertTrue(game.isFinished());
-        assertTrue(saidSomethingContaining("Game over"));
+        assertTrue(happened(new HeroDefeated()));
     }
 
     @Test
@@ -177,7 +197,7 @@ class GameTest {
 
         game.playerUsePotion();
 
-        assertTrue(saidSomethingContaining("al massimo"));
+        assertTrue(happened(new ActionRefused(RefusalReason.FULL_HP)));
         assertFalse(game.isEnemyTurnPending());
         assertEquals(new GameState(1, 100, 2), game.snapshot());
         assertEquals(60, game.getCurrentEnemy().getCurrentHp());
@@ -212,7 +232,7 @@ class GameTest {
         game.playerUsePotion();
 
         assertEquals(0, game.snapshot().potions());
-        assertTrue(saidSomethingContaining("Non hai più"));
+        assertTrue(happened(new ActionRefused(RefusalReason.NO_POTIONS)));
         assertEquals(70, game.snapshot().currentHp());
     }
 
@@ -222,7 +242,7 @@ class GameTest {
 
         game.playerUseActiveAbility();
 
-        assertTrue(saidSomethingContaining("nessuna"));
+        assertTrue(happened(new ActionRefused(RefusalReason.NO_ABILITY)));
         assertFalse(game.isEnemyTurnPending());
         assertEquals(60, game.getCurrentEnemy().getCurrentHp());
         assertEquals(100, game.snapshot().currentHp());

@@ -3,15 +3,11 @@ package it.unicam.cs.mpgc.rpg129873.game;
 import it.unicam.cs.mpgc.rpg129873.level.LevelFactory;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameFactoryTest {
 
-    private final List<String> messages = new ArrayList<>();
-    private final GameFactory factory = new GameFactory(new LevelFactory(), messages::add);
+    private final GameFactory factory = new GameFactory(new LevelFactory(), event -> { });
 
     @Test
     void newGameStartsAtLevelOneWithFullStats() {

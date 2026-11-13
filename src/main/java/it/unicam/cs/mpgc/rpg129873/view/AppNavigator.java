@@ -1,12 +1,13 @@
 package it.unicam.cs.mpgc.rpg129873.view;
 
+import it.unicam.cs.mpgc.rpg129873.controller.EventTextFormatter;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.Game;
 import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
 import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
-import javafx.scene.paint.Color;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class AppNavigator {
     private final GameRepository repository;
     private final GameFactory factory;
     private final GuiEventListener listener;
+    private final EventTextFormatter formatter = new EventTextFormatter();
 
     public AppNavigator(Stage stage, GameRepository repository,
                         GameFactory factory, GuiEventListener listener) {
@@ -46,17 +48,21 @@ public class AppNavigator {
         GameController controller = new GameController(game, repository);
         GameView view = new GameView(controller, this::showMenu,
                 () -> showEnd(controller.getStatus().won()));
-        listener.setHandler(view::appendMessage);
+        listener.setHandler(event -> view.appendMessage(formatter.format(event)));
         controller.start();
         view.refresh();
         show(view.getRoot());
     }
 
-    private void showEnd(boolean won){
-        EndView ens = won
-                ? new EndView("Vittoria!", "Nox, hai sconfitto il barone dello shimmer e liberato la città!", Color.GOLD, this::showMenu)
-                : new EndView("GAME OVER", "Nox, sei stato sconfitto! Riprova dall'inizio del gioco.", Color.CRIMSON, this::showMenu);
-        show(ens.getRoot());
+    private void showEnd(boolean won) {
+        EndView end = won
+                ? new EndView("Vittoria!",
+                "Nox, hai sconfitto il barone dello shimmer e liberato la città!",
+                Color.GOLD, this::showMenu)
+                : new EndView("GAME OVER",
+                "Nox, sei stato sconfitto! Riprova dall'inizio del livello.",
+                Color.CRIMSON, this::showMenu);
+        show(end.getRoot());
     }
 
     private void show(Parent root) {

@@ -1,5 +1,7 @@
 package it.unicam.cs.mpgc.rpg129873.game;
 
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent.RewardGained;
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent.RewardKind;
 import it.unicam.cs.mpgc.rpg129873.model.Hero;
 import it.unicam.cs.mpgc.rpg129873.reward.RewardFuriaShimmer;
 import it.unicam.cs.mpgc.rpg129873.reward.RewardNessuna;
@@ -23,7 +25,7 @@ class LoadoutTest {
     }
 
     @Test
-    void noChangeProducesNoMessages() {
+    void noChangeProducesNoEvents() {
         Loadout before = Loadout.of(hero);
         new RewardNessuna().apply(hero);
 
@@ -31,25 +33,23 @@ class LoadoutTest {
     }
 
     @Test
-    void spadaTemplariAnnouncesWeaponAndPassive() {
+    void spadaTemplariGainsWeaponAndPassive() {
         Loadout before = Loadout.of(hero);
         new RewardSpadaTemplari().apply(hero);
 
-        List<String> messages = Loadout.of(hero).gainedSince(before);
+        List<RewardGained> gained = Loadout.of(hero).gainedSince(before);
 
-        assertEquals(2, messages.size());
-        assertTrue(messages.get(0).contains("La Grande Spada dei Templari"));
-        assertTrue(messages.get(1).contains("Cura dei Templari"));
+        assertEquals(List.of(
+                new RewardGained(RewardKind.WEAPON, "La Grande Spada dei Templari"),
+                new RewardGained(RewardKind.PASSIVE, "Cura dei Templari")), gained);
     }
 
     @Test
-    void furiaShimmerAnnouncesTheActiveAbility() {
+    void furiaShimmerGainsTheActiveAbility() {
         Loadout before = Loadout.of(hero);
         new RewardFuriaShimmer().apply(hero);
 
-        List<String> messages = Loadout.of(hero).gainedSince(before);
-
-        assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains("Furia Shimmer"));
+        assertEquals(List.of(new RewardGained(RewardKind.ACTIVE, "Furia Shimmer")),
+                Loadout.of(hero).gainedSince(before));
     }
 }

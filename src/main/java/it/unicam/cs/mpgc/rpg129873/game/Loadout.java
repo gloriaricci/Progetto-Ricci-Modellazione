@@ -1,5 +1,7 @@
 package it.unicam.cs.mpgc.rpg129873.game;
 
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent.RewardGained;
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent.RewardKind;
 import it.unicam.cs.mpgc.rpg129873.model.Hero;
 
 import java.util.ArrayList;
@@ -14,17 +16,17 @@ public record Loadout (String weapon, String passive, String activeAbility){
                 hero.hasActiveAbility() ? hero.getActiveAbility().getName() : null);
     }
 
-    public List<String> gainedSince(Loadout before) {
-        List<String> messages = new ArrayList<>();
+    public List<RewardGained> gainedSince(Loadout before) {
+        List<RewardGained> gained = new ArrayList<>();
         if (weapon != null && !weapon.equals(before.weapon())) {
-            messages.add("Hai ottenuto l'arma: " + weapon + "!");
+            gained.add(new RewardGained(RewardKind.WEAPON, weapon));
         }
         if (passive != null && !passive.equals(before.passive())) {
-            messages.add("Hai ottenuto l'abilità passiva: " + passive + "!");
+            gained.add(new RewardGained(RewardKind.PASSIVE, passive));
         }
         if (activeAbility != null && !activeAbility.equals(before.activeAbility())) {
-            messages.add("Hai ottenuto l'abilità attiva: " + activeAbility + "!");
+            gained.add(new RewardGained(RewardKind.ACTIVE, activeAbility));
         }
-        return messages;
+        return gained;
     }
 }

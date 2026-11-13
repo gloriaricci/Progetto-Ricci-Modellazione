@@ -19,6 +19,7 @@ public class DuchessaDiSangue extends Enemy {
         if (turnCounter >= 2){
             int lifeSteal = 10;
             this.heal(lifeSteal);
+            setEvent("Ruba vita!! La duchessa recupera: "+ lifeSteal+ " punti vita");
             turnCounter = 0;
         }
     }

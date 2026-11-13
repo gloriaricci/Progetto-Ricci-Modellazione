@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg129873.game;
 
-import it.unicam.cs.mpgc.rpg129873.controller.GameEventListener;
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent.*;
 import it.unicam.cs.mpgc.rpg129873.level.Level;
 import it.unicam.cs.mpgc.rpg129873.level.LevelProvider;
 import it.unicam.cs.mpgc.rpg129873.model.Enemy;
@@ -46,8 +46,8 @@ public class Game {
         Enemy enemy = getCurrentEnemy();
         int enemyHpBefore = enemy.getCurrentHp();
         player.attack(enemy);
-        listener.onMessage(player.getName() + " attacca " + enemy.getName()
-                + " e infligge " + (enemyHpBefore - enemy.getCurrentHp()) + " danni.");
+        listener.onEvent(new HeroAttacked(player.getName(), enemy.getName(),
+                enemyHpBefore - enemy.getCurrentHp()));
         afterPlayerAction();
     }
 
@@ -56,14 +56,14 @@ public class Game {
             return;
         }
         if (player.getCurrentHp() == player.getMaxHp()) {
-            listener.onMessage("La tua vita è già al massimo.");
+            listener.onEvent(new ActionRefused(RefusalReason.FULL_HP));
             return;
         }
         if (!potions.usePotion()) {
-            listener.onMessage("Non hai più pozioni di cura.");
+            listener.onEvent(new ActionRefused(RefusalReason.NO_POTIONS));
             return;
         }
-        listener.onMessage("Hai usato una pozione. Pozioni rimanenti: " + potions.getPotionsCount());
+        listener.onEvent(new PotionUsed(potions.getPotionsCount()));
         afterPlayerAction();
     }
 
@@ -72,7 +72,7 @@ public class Game {
             return;
         }
         if (!player.hasActiveAbility()) {
-            listener.onMessage("Non hai ancora nessuna abilità attiva.");
+            listener.onEvent(new ActionRefused(RefusalReason.NO_ABILITY));
             return;
         }
         beginPlayerTurn();
@@ -80,11 +80,11 @@ public class Game {
         int enemyHpBefore = enemy.getCurrentHp();
         int heroHpBefore = player.getCurrentHp();
         player.useActiveAbility(enemy);
-        listener.onMessage(player.getActiveAbility().getName() + ": infligge "
-                + (enemyHpBefore - enemy.getCurrentHp()) + " danni a " + enemy.getName() + ".");
+        listener.onEvent(new AbilityUsed(player.getActiveAbility().getName(), enemy.getName(),
+                enemyHpBefore - enemy.getCurrentHp()));
         int recoil = heroHpBefore - player.getCurrentHp();
         if (recoil > 0) {
-            listener.onMessage("Il contraccolpo ti costa " + recoil + " punti vita.");
+            listener.onEvent(new RecoilTaken(recoil));
         }
         afterPlayerAction();
     }
@@ -97,9 +97,8 @@ public class Game {
         Enemy enemy = getCurrentEnemy();
         int heroHpBefore = player.getCurrentHp();
         enemy.attack(player);
-        listener.onMessage(enemy.getName() + " ti attacca e infligge "
-                + (heroHpBefore - player.getCurrentHp()) + " danni.");
-        enemy.consumeEvent().ifPresent(listener::onMessage);
+        listener.onEvent(new EnemyAttacked(enemy.getName(), heroHpBefore - player.getCurrentHp()));
+        enemy.consumeEvent().ifPresent(message -> listener.onEvent(new EnemySpecial(message)));
         checkGameState();
     }
 
@@ -153,7 +152,7 @@ public class Game {
         player.onTurnStart();
         int healed = player.getCurrentHp() - hpBefore;
         if (healed > 0) {
-            listener.onMessage("Recuperi " + healed + " punti vita.");
+            listener.onEvent(new HeroHealed(healed));
         }
     }
 
@@ -167,18 +166,18 @@ public class Game {
 
     private void checkGameState() {
         if (!player.isAlive()) {
-            listener.onMessage("Sei stato sconfitto. Game over.");
+            listener.onEvent(new HeroDefeated());
             return;
         }
         if (getCurrentEnemy().isAlive()) {
             return;
         }
 
-        listener.onMessage("Hai sconfitto " + getCurrentEnemy().getName() + "!");
+        listener.onEvent(new EnemyDefeated(getCurrentEnemy().getName()));
 
         if (level.hasNextEnemy()) {
             level.nextEnemy();
-            listener.onMessage("Arriva " + getCurrentEnemy().getName() + "!");
+            listener.onEvent(new EnemyArrived(getCurrentEnemy().getName()));
             return;
         }
 
@@ -190,15 +189,14 @@ public class Game {
             applyProgression();
             announceLevel();
         } else {
-            listener.onMessage("COMPLIMENTI! Hai sconfitto il Barone dello Shimmer "
-                    + "e liberato la città. Hai vinto il gioco!");
+            listener.onEvent(new GameWon());
         }
     }
 
     private void applyReward() {
         Loadout before = Loadout.of(player);
         level.getReward().apply(player);
-        Loadout.of(player).gainedSince(before).forEach(listener::onMessage);
+        Loadout.of(player).gainedSince(before).forEach(listener::onEvent);
     }
 
     private void applyProgression() {
@@ -207,6 +205,6 @@ public class Game {
     }
 
     private void announceLevel() {
-        listener.onMessage("Inizio Livello " + currentLevelNumber + ": " + getCurrentEnemy().getName());
+        listener.onEvent(new LevelStarted(currentLevelNumber, getCurrentEnemy().getName()));
     }
 }

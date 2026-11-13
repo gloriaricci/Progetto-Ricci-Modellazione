@@ -1,8 +1,14 @@
 package it.unicam.cs.mpgc.rpg129873.controller;
 
-public class ConsoleEventListener implements GameEventListener{
+import it.unicam.cs.mpgc.rpg129873.game.GameEvent;
+import it.unicam.cs.mpgc.rpg129873.game.GameEventListener;
+
+public class ConsoleEventListener implements GameEventListener {
+
+    private final EventTextFormatter formatter = new EventTextFormatter();
+
     @Override
-    public void onMessage(String message){
-        System.out.println(message);
+    public void onEvent(GameEvent event){
+        System.out.println(formatter.format(event));
     }
 }
