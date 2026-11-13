@@ -33,7 +33,7 @@ public class AppNavigator {
     }
 
     public void showMenu() {
-        MenuView menu = new MenuView(repository.load().isPresent(), this::play, this::restart);
+        MenuView menu = new MenuView(repository.load().isPresent(), backgrounds, this::play, this::restart);
         show(menu.getRoot());
     }
 
