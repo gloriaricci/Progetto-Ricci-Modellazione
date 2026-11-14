@@ -3,11 +3,11 @@ package it.unicam.cs.mpgc.rpg129873.view;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.Game;
 import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
+import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
 import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
 import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -49,21 +49,21 @@ public class AppNavigator {
     private void startGame(Game game) {
         GameController controller = new GameController(game, repository);
         GameView view = new GameView(controller, backgrounds, this::showMenu,
-                () -> showEnd(controller.getStatus().won()));
+                () -> showEnd(controller.getStatus()));
         listener.setHandler(view::onEvent);
         controller.start();
         view.refresh();
         show(view.getRoot());
     }
 
-    private void showEnd(boolean won) {
-        EndView end = won
+    private void showEnd(GameStatus status) {
+        EndView end = status.won()
                 ? new EndView("Vittoria!",
                 "Nox, hai sconfitto il barone dello shimmer e liberato la città!",
-                Color.GOLD, this::showMenu)
+                "end-title-victory", status.levelNumber(), backgrounds, this::showMenu)
                 : new EndView("GAME OVER",
                 "Nox, sei stato sconfitto! Riprova dall'inizio del livello.",
-                Color.CRIMSON, this::showMenu);
+                "end-title-defeat", status.levelNumber(), backgrounds, this::showMenu);
         show(end.getRoot());
     }
 

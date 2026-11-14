@@ -40,10 +40,6 @@ public class GameView {
     private static final double BAR_HEIGHT = 24;
     private static final double SPRITE_SIZE = 160;
     private static final double ABILITY_BUTTON_SIZE = 100;
-    private static final String ABILITY_STYLE =
-            "-fx-background-color: gold; -fx-text-fill: black; -fx-font-size: 10px;"
-                    + "-fx-border-color: black; -fx-border-width: 3;"
-                    + "-fx-background-radius: 50; -fx-border-radius: 50;";
 
     private final GameController controller;
     private final Runnable onFinished;
@@ -76,7 +72,7 @@ public class GameView {
 
         attackButton.setOnAction(e -> act(controller::onAttack));
         abilityButton.setOnAction(e -> act(controller::onAbility));
-        abilityButton.setStyle(ABILITY_STYLE);
+        abilityButton.getStyleClass().add("ability-button");
         abilityButton.setMinSize(ABILITY_BUTTON_SIZE, ABILITY_BUTTON_SIZE);
         attackButton.getStyleClass().add("pixel-button");
         attackButton.getStyleClass().add("attack-button");
