@@ -1,6 +1,8 @@
 package it.unicam.cs.mpgc.rpg129873.view;
 
 import it.unicam.cs.mpgc.rpg129873.controller.Announcement;
+import it.unicam.cs.mpgc.rpg129873.controller.AnimationCue;
+import it.unicam.cs.mpgc.rpg129873.controller.EventAnimationMapper;
 import it.unicam.cs.mpgc.rpg129873.controller.EventTextFormatter;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.GameEvent;
@@ -11,6 +13,8 @@ import it.unicam.cs.mpgc.rpg129873.view.component.LevelBackground;
 import it.unicam.cs.mpgc.rpg129873.view.component.MessageLog;
 import it.unicam.cs.mpgc.rpg129873.view.component.OverlayView;
 import it.unicam.cs.mpgc.rpg129873.view.component.PotionIndicator;
+import it.unicam.cs.mpgc.rpg129873.view.component.sprites.SpriteProvider;
+import it.unicam.cs.mpgc.rpg129873.view.component.sprites.SpriteView;
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
@@ -23,7 +27,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.ArrayDeque;
@@ -38,12 +41,14 @@ public class GameView {
     private static final int MAX_LOG_LINES = 3;
     private static final double BAR_WIDTH = 240;
     private static final double BAR_HEIGHT = 24;
-    private static final double SPRITE_SIZE = 160;
+    private static final int SPRITE_SCALE = 3;
+    private static final String HERO_SPRITE_ID = "nox";
     private static final double ABILITY_BUTTON_SIZE = 100;
 
     private final GameController controller;
     private final Runnable onFinished;
     private final EventTextFormatter formatter = new EventTextFormatter();
+    private final EventAnimationMapper animations = new EventAnimationMapper();
     private final Queue<Announcement> announcements = new ArrayDeque<>();
     private final StackPane root = new StackPane();
     private final BorderPane content = new BorderPane();
@@ -54,6 +59,8 @@ public class GameView {
     private final Label enemyNameLabel = new Label();
     private final HealthBar heroBar = new HealthBar(BAR_WIDTH, BAR_HEIGHT);
     private final HealthBar enemyBar = new HealthBar(BAR_WIDTH, BAR_HEIGHT);
+    private final SpriteView heroSprite;
+    private final SpriteView enemySprite;
     private final PotionIndicator potionIndicator;
     private final Button attackButton = new Button("Attacco");
     private final Button abilityButton = new Button("Abilità");
@@ -63,10 +70,12 @@ public class GameView {
     private boolean endScheduled = false;
 
     public GameView(GameController controller, BackgroundProvider backgrounds,
-                    Runnable onBackToMenu, Runnable onFinished) {
+                    SpriteProvider sprites, Runnable onBackToMenu, Runnable onFinished) {
         this.controller = Objects.requireNonNull(controller);
         this.onFinished = Objects.requireNonNull(onFinished);
         this.background = new LevelBackground(Objects.requireNonNull(backgrounds));
+        this.heroSprite = new SpriteView(Objects.requireNonNull(sprites), Color.STEELBLUE, SPRITE_SCALE);
+        this.enemySprite = new SpriteView(sprites, Color.DARKRED, SPRITE_SCALE);
         this.potionIndicator = new PotionIndicator(MAX_POTIONS, () -> act(controller::onPotion));
         this.overlay = new OverlayView(this::showNextAnnouncement);
 
@@ -89,8 +98,8 @@ public class GameView {
         BorderPane.setMargin(levelLabel, new Insets(16, 0, 0, 0));
 
         HBox fighters = new HBox(120,
-                fighterPanel(heroNameLabel, heroBar, Color.STEELBLUE, "hero-name"),
-                fighterPanel(enemyNameLabel, enemyBar, Color.DARKRED, "enemy-name"));
+                fighterPanel(heroNameLabel, heroBar, heroSprite, "hero-name"),
+                fighterPanel(enemyNameLabel, enemyBar, enemySprite, "enemy-name"));
         fighters.setAlignment(Pos.CENTER);
 
         HBox buttons = new HBox(24, attackButton, potionIndicator, abilityButton, menuButton);
@@ -112,12 +121,18 @@ public class GameView {
 
     public void onEvent(GameEvent event) {
         log.add(formatter.format(event));
+        animations.cueFor(event).ifPresent(this::playCue);
         if (formatter.isAnnouncement(event)) {
             announcements.add(formatter.toAnnouncement(event));
             if (!overlay.isShowing()) {
                 showNextAnnouncement();
             }
         }
+    }
+
+    private void playCue(AnimationCue cue) {
+        SpriteView target = cue.actor() == AnimationCue.Actor.HERO ? heroSprite : enemySprite;
+        target.play(cue.animation());
     }
 
     public void refresh() {
@@ -130,6 +145,8 @@ public class GameView {
         levelLabel.setText("Livello " + status.levelNumber());
         heroNameLabel.setText(status.heroName());
         enemyNameLabel.setText(status.enemyName());
+        heroSprite.setSprite(HERO_SPRITE_ID);
+        enemySprite.setSprite(status.enemyId());
         heroBar.update(status.heroHp(), status.heroMaxHp());
         enemyBar.update(status.enemyHp(), status.enemyMaxHp());
 
@@ -156,13 +173,10 @@ public class GameView {
         }
     }
 
-    private VBox fighterPanel(Label name, HealthBar bar, Color spriteColor, String nameStyleClass) {
-        Rectangle sprite = new Rectangle(SPRITE_SIZE, SPRITE_SIZE, spriteColor);
-        sprite.setStroke(Color.BLACK);
-        sprite.setStrokeWidth(4);
+    private VBox fighterPanel(Label name, HealthBar bar, SpriteView sprite, String nameStyleClass) {
         name.getStyleClass().add(nameStyleClass);
 
-        VBox panel = new VBox(10, name, bar, new StackPane(sprite));
+        VBox panel = new VBox(10, name, bar, sprite);
         panel.setAlignment(Pos.CENTER);
         return panel;
     }

@@ -6,6 +6,9 @@
     -nox-fucsia: #fd3ddd;
     -nox-ciano: #4df0ff;
     -nox-nemico: #6603cc;
+    -nox-oro: #ffd700;
+    -nox-rosso: #dc143c;
+
 }
 
 .menu-title {
@@ -38,6 +41,24 @@
 .attack-button {
     -fx-border-color: #fd3ddd;
 }
+.ability-button {
+    -fx-background-color: #ffd700;
+    -fx-background-radius: 50;
+    -fx-border-color: black;
+    -fx-border-width: 3;
+    -fx-border-radius: 50;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-cursor: hand;
+}
+
+.ability-button:hover {
+    -fx-background-color: #ffe766;
+}
+
+.ability-button:disabled {
+    -fx-opacity: 0.4;
+}
 
 .level-label {
     -fx-font-size: 16px;
@@ -57,6 +78,28 @@
     -fx-effect: dropshadow(one-pass-box, black, 2, 1.0, 1, 1);
 }
 
+.end-dim {
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+}
+
+.end-title {
+    -fx-font-size: 36px;
+    -fx-effect: dropshadow(one-pass-box, black, 2, 1.0, 3, 3);
+}
+
+.end-title-victory {
+    -fx-text-fill: #ffd700;
+}
+
+.end-title-defeat {
+    -fx-text-fill: #dc143c;
+}
+
+.end-message {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(one-pass-box, black, 2, 1.0, 1, 1);
+}
 
 .overlay-title {
     -fx-font-size: 28px;

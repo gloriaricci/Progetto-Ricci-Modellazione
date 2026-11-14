@@ -8,9 +8,9 @@ import it.unicam.cs.mpgc.rpg129873.persistence.JsonGameRepository;
 import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
 import it.unicam.cs.mpgc.rpg129873.view.component.PixelFont;
 import it.unicam.cs.mpgc.rpg129873.view.component.ResourceBackgroundProvider;
+import it.unicam.cs.mpgc.rpg129873.view.component.sprites.ResourceSpriteProvider;
+import it.unicam.cs.mpgc.rpg129873.view.component.sprites.SpriteProvider;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.nio.file.Path;
@@ -26,8 +26,9 @@ public class NoxApp extends Application {
         GameRepository repository = new JsonGameRepository(Path.of("nox-save.json"));
         GameFactory factory = new GameFactory(levels,listener);
         BackgroundProvider backgrounds = new ResourceBackgroundProvider();
+        SpriteProvider sprites = new ResourceSpriteProvider();
 
-        AppNavigator navigator = new AppNavigator(stage, repository, factory, listener, backgrounds);
+        AppNavigator navigator = new AppNavigator(stage, repository, factory, listener, backgrounds,sprites);
 
         stage.setTitle("Nox");
         navigator.showMenu();

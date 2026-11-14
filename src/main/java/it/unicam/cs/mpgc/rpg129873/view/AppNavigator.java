@@ -6,6 +6,7 @@ import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
 import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
 import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
 import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
+import it.unicam.cs.mpgc.rpg129873.view.component.sprites.SpriteProvider;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,13 +24,15 @@ public class AppNavigator {
     private final GameFactory factory;
     private final GuiEventListener listener;
     private final BackgroundProvider backgrounds;
+    private final SpriteProvider sprites;
 
-    public AppNavigator(Stage stage, GameRepository repository, GameFactory factory, GuiEventListener listener, BackgroundProvider backgrounds) {
+    public AppNavigator(Stage stage, GameRepository repository, GameFactory factory, GuiEventListener listener, BackgroundProvider backgrounds, SpriteProvider sprites) {
         this.stage = Objects.requireNonNull(stage);
         this.repository = Objects.requireNonNull(repository);
         this.factory = Objects.requireNonNull(factory);
         this.listener = Objects.requireNonNull(listener);
         this.backgrounds = Objects.requireNonNull(backgrounds);
+        this.sprites = Objects.requireNonNull(sprites);
     }
 
     public void showMenu() {
@@ -48,7 +51,7 @@ public class AppNavigator {
 
     private void startGame(Game game) {
         GameController controller = new GameController(game, repository);
-        GameView view = new GameView(controller, backgrounds, this::showMenu,
+        GameView view = new GameView(controller, backgrounds, sprites, this::showMenu,
                 () -> showEnd(controller.getStatus()));
         listener.setHandler(view::onEvent);
         controller.start();

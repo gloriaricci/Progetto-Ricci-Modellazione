@@ -1,0 +1,12 @@
+{
+  "nox": {
+    "file": "nox.png",
+    "frameWidth": 69,
+    "frameHeight": 44,
+    "animations": {
+      "idle":    { "row": 0,  "frames": 6, "frameMillis": 120, "loop": true },
+      "attack":  { "row": 3,  "frames": 6, "frameMillis": 80,  "loop": false },
+      "ability": { "row": 13, "frames": 6, "frameMillis": 70,  "loop": false }
+    }
+  }
+}
