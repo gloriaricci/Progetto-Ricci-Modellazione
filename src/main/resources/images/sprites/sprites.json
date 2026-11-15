@@ -8,5 +8,15 @@
       "attack":  { "row": 3,  "frames": 6, "frameMillis": 80,  "loop": false },
       "ability": { "row": 13, "frames": 6, "frameMillis": 70,  "loop": false }
     }
+  },
+
+  "boss1": {
+    "file": "boss1.png",
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "animations": {
+      "idle":   { "row": 2, "startFrame": 1, "frames": 12, "frameMillis": 100, "loop": true },
+      "attack": { "row": 0, "startFrame": 0, "frames": 9,  "frameMillis": 70,  "loop": false }
+    }
   }
 }

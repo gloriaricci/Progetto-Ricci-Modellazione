@@ -46,7 +46,7 @@ public class ResourceSpriteProvider implements SpriteProvider {
 
     private boolean fits(SpriteSpec spec, Image image) {
         return spec.animations().values().stream().allMatch(animation ->
-                animation.frames() * spec.frameWidth() <= image.getWidth()
+                (animation.startFrame() + animation.frames()) * spec.frameWidth() <= image.getWidth()
                         && (animation.row() + 1) * spec.frameHeight() <= image.getHeight());
     }
 

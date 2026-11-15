@@ -116,8 +116,9 @@ public class SpriteView extends StackPane {
     }
 
     private void showFrame() {
+        int column = currentAnimation.startFrame() + frameIndex;
         imageView.setViewport(new Rectangle2D(
-                (double) frameIndex * currentSpec.frameWidth(),
+                (double) column * currentSpec.frameWidth(),
                 (double) currentAnimation.row() * currentSpec.frameHeight(),
                 currentSpec.frameWidth(),
                 currentSpec.frameHeight()));
