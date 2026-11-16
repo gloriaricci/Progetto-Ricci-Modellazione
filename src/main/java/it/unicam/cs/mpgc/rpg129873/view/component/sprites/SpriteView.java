@@ -19,7 +19,7 @@ public class SpriteView extends StackPane {
     private static final double FALLBACK_BORDER = 4;
 
     private final SpriteProvider provider;
-    private final int scale;
+    private final int defaultScale;
     private final Rectangle placeholder;
     private final ImageView imageView = new ImageView();
     private Timeline timeline;
@@ -28,12 +28,12 @@ public class SpriteView extends StackPane {
     private String currentId;
     private int frameIndex;
 
-    public SpriteView(SpriteProvider provider, Color fallbackColor, int scale) {
-        if (scale < 1) {
+    public SpriteView(SpriteProvider provider, Color fallbackColor, int defaultScale) {
+        if (defaultScale < 1) {
             throw new IllegalArgumentException("scale must be at least 1");
         }
         this.provider = Objects.requireNonNull(provider);
-        this.scale = scale;
+        this.defaultScale = defaultScale;
 
         placeholder = new Rectangle(FALLBACK_SIZE, FALLBACK_SIZE, Objects.requireNonNull(fallbackColor));
         placeholder.setStroke(Color.BLACK);
@@ -68,6 +68,7 @@ public class SpriteView extends StackPane {
 
     private void showSprite(Sprite sprite) {
         currentSpec = sprite.spec();
+        int scale = currentSpec.scale() > 0 ? currentSpec.scale() : defaultScale;
         imageView.setImage(sprite.sheet());
         imageView.setFitWidth((double) currentSpec.frameWidth() * scale);
         imageView.setFitHeight((double) currentSpec.frameHeight() * scale);

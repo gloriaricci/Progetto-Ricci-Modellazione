@@ -3,9 +3,14 @@ package it.unicam.cs.mpgc.rpg129873.view.component.sprites;
 import java.util.Map;
 
 public record SpriteSpec(String file, int frameWidth, int frameHeight,
-                         Map<String, AnimationSpec> animations) {
+                         Map<String, AnimationSpec> animations, int scale) {
 
     public static final String IDLE = "idle";
+
+    public SpriteSpec(String file, int frameWidth, int frameHeight,
+                      Map<String, AnimationSpec> animations) {
+        this(file, frameWidth, frameHeight, animations, 0);
+    }
 
     public SpriteSpec {
         if (file == null || file.isBlank()) {
@@ -19,6 +24,9 @@ public record SpriteSpec(String file, int frameWidth, int frameHeight,
         }
         if (!animations.get(IDLE).loop()) {
             throw new IllegalArgumentException("The '" + IDLE + "' animation must loop");
+        }
+        if (scale < 0) {
+            throw new IllegalArgumentException("Invalid scale: " + scale);
         }
         animations = Map.copyOf(animations);
     }

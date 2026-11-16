@@ -9,7 +9,6 @@
       "ability": { "row": 13, "frames": 6, "frameMillis": 70,  "loop": false }
     }
   },
-
   "boss1": {
     "file": "boss1.png",
     "frameWidth": 64,
@@ -17,6 +16,55 @@
     "animations": {
       "idle":   { "row": 2, "startFrame": 1, "frames": 12, "frameMillis": 100, "loop": true },
       "attack": { "row": 0, "startFrame": 0, "frames": 9,  "frameMillis": 70,  "loop": false }
+    }
+  },
+  "boss2": {
+    "file": "boss2.png",
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "animations": {
+      "idle":   { "row": 0, "startFrame": 0, "frames": 7, "frameMillis": 150, "loop": true },
+      "attack": { "row": 1, "startFrame": 0, "frames": 7, "frameMillis": 90,  "loop": false }
+    }
+  },
+  "boss3a": {
+    "file": "boss3a.png",
+    "frameWidth": 116,
+    "frameHeight": 78,
+    "scale": 2,
+    "animations": {
+      "idle":   { "row": 0, "startFrame": 0, "frames": 4, "frameMillis": 200, "loop": true },
+      "attack": { "row": 1, "startFrame": 0, "frames": 5, "frameMillis": 130, "loop": false }
+    }
+  },
+  "boss3b": {
+    "file": "boss3b.png",
+    "frameWidth": 116,
+    "frameHeight": 78,
+    "scale": 2,
+    "animations": {
+      "idle":   { "row": 0, "startFrame": 0, "frames": 4, "frameMillis": 200, "loop": true },
+      "attack": { "row": 1, "startFrame": 0, "frames": 5, "frameMillis": 130, "loop": false }
+    }
+  },
+  "boss4": {
+    "file": "boss4.png",
+    "frameWidth": 128,
+    "frameHeight": 92,
+    "scale": 2,
+    "animations": {
+      "idle":   { "row": 0, "startFrame": 0, "frames": 7,  "frameMillis": 150, "loop": true },
+      "attack": { "row": 1, "startFrame": 0, "frames": 16, "frameMillis": 45,  "loop": false }
+    }
+  },
+  "bossFinale": {
+    "file": "bossFinale.png",
+    "frameWidth": 64,
+    "frameHeight": 62,
+    "scale": 4,
+    "animations": {
+      "idle":   { "row": 0, "startFrame": 3, "frames": 9,  "frameMillis": 120, "loop": true },
+      "attack": { "row": 2, "startFrame": 0, "frames": 12, "frameMillis": 60,  "loop": false }
     }
   }
 }

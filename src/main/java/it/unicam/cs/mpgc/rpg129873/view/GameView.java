@@ -42,6 +42,7 @@ public class GameView {
     private static final double BAR_WIDTH = 240;
     private static final double BAR_HEIGHT = 24;
     private static final int SPRITE_SCALE = 3;
+    private static final double SPRITE_SLOT_HEIGHT = 200;
     private static final String HERO_SPRITE_ID = "nox";
     private static final double ABILITY_BUTTON_SIZE = 100;
 
@@ -176,8 +177,14 @@ public class GameView {
     private VBox fighterPanel(Label name, HealthBar bar, SpriteView sprite, String nameStyleClass) {
         name.getStyleClass().add(nameStyleClass);
 
-        VBox panel = new VBox(10, name, bar, sprite);
-        panel.setAlignment(Pos.CENTER);
+        StackPane slot = new StackPane(sprite);
+        slot.setMinHeight(SPRITE_SLOT_HEIGHT);
+        slot.setPrefHeight(SPRITE_SLOT_HEIGHT);
+        slot.setMaxHeight(SPRITE_SLOT_HEIGHT);
+        StackPane.setAlignment(sprite, Pos.BOTTOM_CENTER);
+
+        VBox panel = new VBox(10, name, bar, slot);
+        panel.setAlignment(Pos.TOP_CENTER);
         return panel;
     }
 
