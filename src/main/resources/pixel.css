@@ -20,7 +20,7 @@
 .pixel-button {
     -fx-background-color: rgba(20, 0, 35, 0.8);
     -fx-background-radius: 0;
-    -fx-border-color: #9e14c;
+    -fx-border-color: #9e14c5;
     -fx-border-width: 3;
     -fx-border-radius: 0;
     -fx-text-fill: white;

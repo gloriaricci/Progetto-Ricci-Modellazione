@@ -2,10 +2,10 @@ package it.unicam.cs.mpgc.rpg129873.model;
 
 public abstract class Entity {
     private final String id;
-    private String name;
+    private final String name;
     private int maxHp;
     private int currentHp;
-    private int attackPower;
+    private final int attackPower;
 
     public Entity(String id, String name, int maxHp, int attackPower){
         if(id == null || id.isBlank()){
@@ -23,9 +23,6 @@ public abstract class Entity {
     }
     public String getName(){
         return name;
-    }
-    public void setName(String name){
-        this.name = name;
     }
 
     public int getMaxHp(){
@@ -45,9 +42,6 @@ public abstract class Entity {
 
     public int getAttackPower(){
         return attackPower;
-    }
-    public void setAttackPower(int attackPower){
-        this.attackPower = attackPower;
     }
 
     public void takeDamage(int damage){

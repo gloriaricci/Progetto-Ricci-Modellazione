@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg129873.model.Hero;
 public class BaroneShimmer extends Enemy {
 
     private int turnCounter = 0;
-    private final int healAmount = 20;
+    private static final int HEAL_AMOUNT = 20;
 
     public BaroneShimmer(){
         super("bossFinale", "Barone dello Shimmer", 300, 35);
@@ -19,7 +19,7 @@ public class BaroneShimmer extends Enemy {
         super.attack(hero);
 
          if (turnCounter % 2 == 0){
-             heal(healAmount);
+             heal(HEAL_AMOUNT);
              setEvent("Distorsione temporale!! il barone ricarica " + healAmount + " punti vita.");
          }
     }
