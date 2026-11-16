@@ -28,10 +28,6 @@ application {
     mainClass = 'it.unicam.cs.mpgc.rpg129873.view.Launcher'
 }
 
-run {
-    standardInput = System.in
-}
-
 test {
     useJUnitPlatform()
 }
