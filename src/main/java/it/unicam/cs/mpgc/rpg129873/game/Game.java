@@ -130,10 +130,12 @@ public class Game {
         Enemy enemy = getCurrentEnemy();
         return new GameStatus(
                 currentLevelNumber,
+                player.getId(),
                 player.getName(),
                 player.getCurrentHp(),
                 player.getMaxHp(),
                 potions.getPotionsCount(),
+                potions.getMaxPotions(),
                 player.hasActiveAbility(),
                 enemy.getId(),
                 enemy.getName(),

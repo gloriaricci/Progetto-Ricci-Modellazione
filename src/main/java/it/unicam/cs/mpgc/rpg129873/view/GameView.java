@@ -1,33 +1,30 @@
 package it.unicam.cs.mpgc.rpg129873.view;
 
-import it.unicam.cs.mpgc.rpg129873.controller.Announcement;
 import it.unicam.cs.mpgc.rpg129873.controller.AnimationCue;
+import it.unicam.cs.mpgc.rpg129873.controller.Announcement;
 import it.unicam.cs.mpgc.rpg129873.controller.EventAnimationMapper;
 import it.unicam.cs.mpgc.rpg129873.controller.EventTextFormatter;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.GameEvent;
 import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
+import it.unicam.cs.mpgc.rpg129873.view.component.ActionBar;
 import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
-import it.unicam.cs.mpgc.rpg129873.view.component.HealthBar;
+import it.unicam.cs.mpgc.rpg129873.view.component.DelayedTask;
+import it.unicam.cs.mpgc.rpg129873.view.component.EnemyTurnScheduler;
+import it.unicam.cs.mpgc.rpg129873.view.component.FighterPanel;
 import it.unicam.cs.mpgc.rpg129873.view.component.LevelBackground;
 import it.unicam.cs.mpgc.rpg129873.view.component.MessageLog;
 import it.unicam.cs.mpgc.rpg129873.view.component.OverlayView;
-import it.unicam.cs.mpgc.rpg129873.view.component.PotionIndicator;
 import it.unicam.cs.mpgc.rpg129873.view.component.sprites.SpriteProvider;
-import it.unicam.cs.mpgc.rpg129873.view.component.sprites.SpriteView;
-import javafx.animation.Animation;
-import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 import java.util.ArrayDeque;
 import java.util.Objects;
@@ -35,16 +32,10 @@ import java.util.Queue;
 
 public class GameView {
 
-    private static final double ENEMY_DELAY_MS = 700;
     private static final double END_DELAY_MS = 1500;
-    private static final int MAX_POTIONS = 2;
     private static final int MAX_LOG_LINES = 3;
-    private static final double BAR_WIDTH = 240;
-    private static final double BAR_HEIGHT = 24;
     private static final int SPRITE_SCALE = 3;
     private static final double SPRITE_SLOT_HEIGHT = 200;
-    private static final String HERO_SPRITE_ID = "nox";
-    private static final double ABILITY_BUTTON_SIZE = 100;
 
     private final GameController controller;
     private final Runnable onFinished;
@@ -52,63 +43,54 @@ public class GameView {
     private final EventAnimationMapper animations = new EventAnimationMapper();
     private final Queue<Announcement> announcements = new ArrayDeque<>();
     private final StackPane root = new StackPane();
-    private final BorderPane content = new BorderPane();
     private final LevelBackground background;
     private final OverlayView overlay;
     private final Label levelLabel = new Label();
-    private final Label heroNameLabel = new Label();
-    private final Label enemyNameLabel = new Label();
-    private final HealthBar heroBar = new HealthBar(BAR_WIDTH, BAR_HEIGHT);
-    private final HealthBar enemyBar = new HealthBar(BAR_WIDTH, BAR_HEIGHT);
-    private final SpriteView heroSprite;
-    private final SpriteView enemySprite;
-    private final PotionIndicator potionIndicator;
-    private final Button attackButton = new Button("Attacco");
-    private final Button abilityButton = new Button("Abilità");
+    private final FighterPanel heroPanel;
+    private final FighterPanel enemyPanel;
+    private final ActionBar actionBar;
     private final MessageLog log = new MessageLog(MAX_LOG_LINES);
-    private PauseTransition enemyPause;
-    private PauseTransition endPause;
+    private final EnemyTurnScheduler enemyTurns;
+    private final DelayedTask endDelay = new DelayedTask();
     private boolean endScheduled = false;
 
     public GameView(GameController controller, BackgroundProvider backgrounds,
                     SpriteProvider sprites, Runnable onBackToMenu, Runnable onFinished) {
         this.controller = Objects.requireNonNull(controller);
         this.onFinished = Objects.requireNonNull(onFinished);
+        Objects.requireNonNull(onBackToMenu);
         this.background = new LevelBackground(Objects.requireNonNull(backgrounds));
-        this.heroSprite = new SpriteView(Objects.requireNonNull(sprites), Color.STEELBLUE, SPRITE_SCALE);
-        this.enemySprite = new SpriteView(sprites, Color.DARKRED, SPRITE_SCALE);
-        this.potionIndicator = new PotionIndicator(MAX_POTIONS, () -> act(controller::onPotion));
+        Objects.requireNonNull(sprites);
+
+        this.heroPanel = new FighterPanel(sprites, Color.STEELBLUE, SPRITE_SCALE,
+                SPRITE_SLOT_HEIGHT, "hero-name");
+        this.enemyPanel = new FighterPanel(sprites, Color.DARKRED, SPRITE_SCALE,
+                SPRITE_SLOT_HEIGHT, "enemy-name");
         this.overlay = new OverlayView(this::showNextAnnouncement);
-
-        attackButton.setOnAction(e -> act(controller::onAttack));
-        abilityButton.setOnAction(e -> act(controller::onAbility));
-        abilityButton.getStyleClass().add("ability-button");
-        abilityButton.setMinSize(ABILITY_BUTTON_SIZE, ABILITY_BUTTON_SIZE);
-        attackButton.getStyleClass().add("pixel-button");
-        attackButton.getStyleClass().add("attack-button");
-
-        Button menuButton = new Button("Menu");
-        menuButton.getStyleClass().add("pixel-button");
-        menuButton.setOnAction(e -> {
-            stopPauses();
-            onBackToMenu.run();
+        this.enemyTurns = new EnemyTurnScheduler(controller::isEnemyTurnPending, () -> {
+            controller.onEnemyTurn();
+            refresh();
         });
+        this.actionBar = new ActionBar(controller.getStatus().maxPotions(),
+                () -> act(controller::onAttack),
+                () -> act(controller::onPotion),
+                () -> act(controller::onAbility),
+                () -> {
+                    cancelTimers();
+                    onBackToMenu.run();
+                });
 
         levelLabel.getStyleClass().add("level-label");
         BorderPane.setAlignment(levelLabel, Pos.CENTER);
         BorderPane.setMargin(levelLabel, new Insets(16, 0, 0, 0));
 
-        HBox fighters = new HBox(120,
-                fighterPanel(heroNameLabel, heroBar, heroSprite, "hero-name"),
-                fighterPanel(enemyNameLabel, enemyBar, enemySprite, "enemy-name"));
+        HBox fighters = new HBox(120, heroPanel, enemyPanel);
         fighters.setAlignment(Pos.CENTER);
 
-        HBox buttons = new HBox(24, attackButton, potionIndicator, abilityButton, menuButton);
-        buttons.setAlignment(Pos.CENTER);
-
-        VBox bottom = new VBox(12, log, buttons);
+        VBox bottom = new VBox(12, log, actionBar);
         bottom.setPadding(new Insets(16));
 
+        BorderPane content = new BorderPane();
         content.setTop(levelLabel);
         content.setCenter(fighters);
         content.setBottom(bottom);
@@ -131,11 +113,6 @@ public class GameView {
         }
     }
 
-    private void playCue(AnimationCue cue) {
-        SpriteView target = cue.actor() == AnimationCue.Actor.HERO ? heroSprite : enemySprite;
-        target.play(cue.animation());
-    }
-
     public void refresh() {
         GameStatus status = controller.getStatus();
         boolean locked = status.finished()
@@ -144,24 +121,19 @@ public class GameView {
 
         background.setLevel(status.levelNumber());
         levelLabel.setText("Livello " + status.levelNumber());
-        heroNameLabel.setText(status.heroName());
-        enemyNameLabel.setText(status.enemyName());
-        heroSprite.setSprite(HERO_SPRITE_ID);
-        enemySprite.setSprite(status.enemyId());
-        heroBar.update(status.heroHp(), status.heroMaxHp());
-        enemyBar.update(status.enemyHp(), status.enemyMaxHp());
-
-        attackButton.setDisable(locked);
-        potionIndicator.update(status.potions(), !locked);
-
-        abilityButton.setVisible(status.abilityAvailable());
-        abilityButton.setManaged(status.abilityAvailable());
-        abilityButton.setDisable(locked);
+        heroPanel.show(status.heroId(), status.heroName(), status.heroHp(), status.heroMaxHp());
+        enemyPanel.show(status.enemyId(), status.enemyName(), status.enemyHp(), status.enemyMaxHp());
+        actionBar.update(status.potions(), status.abilityAvailable(), locked);
 
         if (status.finished() && !endScheduled) {
             endScheduled = true;
-            scheduleEnd();
+            endDelay.schedule(END_DELAY_MS, onFinished);
         }
+    }
+
+    private void playCue(AnimationCue cue) {
+        FighterPanel target = cue.actor() == AnimationCue.Actor.HERO ? heroPanel : enemyPanel;
+        target.play(cue.animation());
     }
 
     private void showNextAnnouncement() {
@@ -170,57 +142,19 @@ public class GameView {
             overlay.show(next.title(), next.subtitle());
         } else {
             refresh();
-            scheduleEnemyTurnIfNeeded();
-        }
-    }
-
-    private VBox fighterPanel(Label name, HealthBar bar, SpriteView sprite, String nameStyleClass) {
-        name.getStyleClass().add(nameStyleClass);
-
-        StackPane slot = new StackPane(sprite);
-        slot.setMinHeight(SPRITE_SLOT_HEIGHT);
-        slot.setPrefHeight(SPRITE_SLOT_HEIGHT);
-        slot.setMaxHeight(SPRITE_SLOT_HEIGHT);
-        StackPane.setAlignment(sprite, Pos.BOTTOM_CENTER);
-
-        VBox panel = new VBox(10, name, bar, slot);
-        panel.setAlignment(Pos.TOP_CENTER);
-        return panel;
-    }
-
-    private void scheduleEnemyTurnIfNeeded() {
-        boolean alreadyScheduled = enemyPause != null
-                && enemyPause.getStatus() == Animation.Status.RUNNING;
-        if (!controller.isEnemyTurnPending() || overlay.isShowing() || alreadyScheduled) {
-            return;
-        }
-        enemyPause = new PauseTransition(Duration.millis(ENEMY_DELAY_MS));
-        enemyPause.setOnFinished(e -> {
-            controller.onEnemyTurn();
-            refresh();
-        });
-        enemyPause.play();
-    }
-
-    private void scheduleEnd() {
-        endPause = new PauseTransition(Duration.millis(END_DELAY_MS));
-        endPause.setOnFinished(e -> onFinished.run());
-        endPause.play();
-    }
-
-    private void stopPauses() {
-        if (enemyPause != null) {
-            enemyPause.stop();
-        }
-        if (endPause != null) {
-            endPause.stop();
+            enemyTurns.scheduleIfNeeded(overlay.isShowing());
         }
     }
 
     private void act(Runnable action) {
         action.run();
         refresh();
-        scheduleEnemyTurnIfNeeded();
+        enemyTurns.scheduleIfNeeded(overlay.isShowing());
+    }
+
+    private void cancelTimers() {
+        enemyTurns.cancel();
+        endDelay.cancel();
     }
 }
 

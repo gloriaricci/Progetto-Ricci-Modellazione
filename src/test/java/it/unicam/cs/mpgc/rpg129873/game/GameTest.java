@@ -257,6 +257,8 @@ class GameTest {
         GameStatus status = game.status();
 
         assertEquals(1, status.levelNumber());
+        assertEquals("nox", status.heroId());
+        assertEquals(2, status.maxPotions());
         assertEquals("Nox", status.heroName());
         assertEquals(95, status.heroHp());
         assertEquals(100, status.heroMaxHp());

@@ -16,9 +16,11 @@ class NoxTest {
 
     @Test
     void startsWithTheExpectedStats() {
+        assertEquals("nox", nox.getId());
         assertEquals("Nox", nox.getName());
         assertEquals(100, nox.getMaxHp());
         assertEquals(2, nox.getPotionsCount());
+        assertEquals(2, nox.getMaxPotions());
     }
 
     @Test
@@ -55,5 +57,11 @@ class NoxTest {
     void potionsCountNeverGoesNegative() {
         nox.setPotionsCount(-3);
         assertEquals(0, nox.getPotionsCount());
+    }
+
+    @Test
+    void potionsCountNeverExceedsTheMaximum() {
+        nox.setPotionsCount(99);
+        assertEquals(2, nox.getPotionsCount());
     }
 }
