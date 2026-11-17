@@ -8,7 +8,7 @@ public class Nox extends Hero implements PotionHolder{
     private final int potionHealAmount;
 
     public Nox(){
-        super("eroe Nox", "Nox", 100, 0);
+        super("nox", "Nox", 100, 0);
         this.potionsCount = MAX_POTIONS;
         this.potionHealAmount = 40;
     }
@@ -20,7 +20,7 @@ public class Nox extends Hero implements PotionHolder{
             heal(potionHealAmount);
             return true;
         }
-            return false;
+        return false;
     }
 
     @Override
@@ -34,6 +34,6 @@ public class Nox extends Hero implements PotionHolder{
     }
 
     public void setPotionsCount(int potionsCount){
-        this.potionsCount = Math.max(0, potionsCount);
+        this.potionsCount = Math.max(0, Math.min(potionsCount, MAX_POTIONS));
     }
 }
