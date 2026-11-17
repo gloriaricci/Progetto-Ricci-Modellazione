@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg129873.view;
 
+import it.unicam.cs.mpgc.rpg129873.controller.CheckpointManager;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.Game;
 import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
@@ -50,7 +51,7 @@ public class AppNavigator {
     }
 
     private void startGame(Game game) {
-        GameController controller = new GameController(game, repository);
+        GameController controller = new GameController(game, new CheckpointManager(game, repository));
         GameView view = new GameView(controller, backgrounds, sprites, this::showMenu,
                 () -> showEnd(controller.getStatus()));
         listener.setHandler(view::onEvent);
@@ -79,4 +80,5 @@ public class AppNavigator {
         stage.setScene(scene);
     }
 }
+
 

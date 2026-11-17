@@ -21,7 +21,7 @@ class GameControllerTest {
 
     private GameController controller(List<Supplier<Level>> levels) {
         Game game = new GameFactory(new FakeLevelProvider(levels), message -> { }).newGame();
-        return new GameController(game, repository);
+        return new GameController(game, new CheckpointManager(game, repository));
     }
 
     @Test
