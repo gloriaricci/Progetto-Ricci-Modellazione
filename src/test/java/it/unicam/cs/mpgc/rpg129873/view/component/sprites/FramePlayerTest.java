@@ -104,3 +104,4 @@ class FramePlayerTest {
         assertThrows(NullPointerException.class, () -> new FramePlayer(null));
     }
 }
+
