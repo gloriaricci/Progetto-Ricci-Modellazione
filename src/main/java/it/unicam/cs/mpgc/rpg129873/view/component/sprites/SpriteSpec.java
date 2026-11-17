@@ -30,4 +30,10 @@ public record SpriteSpec(String file, int frameWidth, int frameHeight,
         }
         animations = Map.copyOf(animations);
     }
+
+    public boolean fitsIn(int imageWidth, int imageHeight) {
+        return animations.values().stream().allMatch(animation ->
+                (animation.startFrame() + animation.frames()) * frameWidth <= imageWidth
+                        && (animation.row() + 1) * frameHeight <= imageHeight);
+    }
 }

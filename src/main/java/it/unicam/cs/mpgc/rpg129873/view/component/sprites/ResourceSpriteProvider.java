@@ -1,26 +1,24 @@
 package it.unicam.cs.mpgc.rpg129873.view.component.sprites;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import it.unicam.cs.mpgc.rpg129873.view.component.ImageLoader;
 import javafx.scene.image.Image;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ResourceSpriteProvider implements SpriteProvider {
 
     private static final String FOLDER = "/images/sprites/";
-    private static final String CONFIG = FOLDER + "sprites.json";
     private static final int STATIC_FRAME_MILLIS = 1000;
-    private static final Type CONFIG_TYPE = new TypeToken<Map<String, SpriteSpec>>() { }.getType();
 
-    private final Map<String, SpriteSpec> specs = loadSpecs();
+    private final Map<String, SpriteSpec> specs;
+    private final ImageLoader images;
+
+    public ResourceSpriteProvider(Map<String, SpriteSpec> specs, ImageLoader images) {
+        this.specs = Map.copyOf(Objects.requireNonNull(specs));
+        this.images = Objects.requireNonNull(images);
+    }
 
     @Override
     public Optional<Sprite> spriteFor(String id) {
@@ -32,43 +30,24 @@ public class ResourceSpriteProvider implements SpriteProvider {
     }
 
     private Optional<Sprite> loadConfigured(SpriteSpec spec) {
-        return loadImage(spec.file())
+        return images.load(FOLDER + spec.file())
                 .filter(image -> fits(spec, image))
                 .map(image -> new Sprite(image, spec));
     }
 
     private Optional<Sprite> loadStatic(String id) {
         String file = id + ".png";
-        return loadImage(file).map(image -> new Sprite(image,
+        return images.load(FOLDER + file).map(image -> new Sprite(image,
                 new SpriteSpec(file, (int) image.getWidth(), (int) image.getHeight(),
                         Map.of(SpriteSpec.IDLE, new AnimationSpec(0, 1, STATIC_FRAME_MILLIS, true)))));
     }
 
     private boolean fits(SpriteSpec spec, Image image) {
-        return spec.animations().values().stream().allMatch(animation ->
-                (animation.startFrame() + animation.frames()) * spec.frameWidth() <= image.getWidth()
-                        && (animation.row() + 1) * spec.frameHeight() <= image.getHeight());
-    }
-
-    private Optional<Image> loadImage(String file) {
-        URL url = ResourceSpriteProvider.class.getResource(FOLDER + file);
-        if (url == null) {
-            return Optional.empty();
+        boolean fits = spec.fitsIn((int) image.getWidth(), (int) image.getHeight());
+        if (!fits) {
+            System.err.println("[sprites] " + spec.file()
+                    + ": le animazioni non stanno nell'immagine, sprite ignorato.");
         }
-        Image image = new Image(url.toExternalForm());
-        return image.isError() ? Optional.empty() : Optional.of(image);
-    }
-
-    private static Map<String, SpriteSpec> loadSpecs() {
-        try (InputStream in = ResourceSpriteProvider.class.getResourceAsStream(CONFIG)) {
-            if (in == null) {
-                return Map.of();
-            }
-            Map<String, SpriteSpec> loaded =
-                    new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), CONFIG_TYPE);
-            return loaded != null ? loaded : Map.of();
-        } catch (IOException | RuntimeException e) {
-            return Map.of();
-        }
+        return fits;
     }
 }

@@ -20,7 +20,7 @@ public class BaroneShimmer extends Enemy {
 
          if (turnCounter % 2 == 0){
              heal(HEAL_AMOUNT);
-             setEvent("Distorsione temporale!! il barone ricarica " + healAmount + " punti vita.");
+             setEvent("Distorsione temporale!! il barone ricarica " + HEAL_AMOUNT + " punti vita.");
          }
     }
 }
