@@ -41,7 +41,10 @@ public class EventTextFormatter {
             case LevelStarted e -> new Announcement("Livello " + e.level(), e.enemyName());
             case RewardGained e -> new Announcement(rewardText(e), "");
             case EnemyArrived e -> new Announcement(format(e), "");
-            default -> throw new IllegalArgumentException("Not an announcement: " + event);
+            case EnemyDefeated _, HeroAttacked _, AbilityUsed _, RecoilTaken _,
+                 HeroHealed _, PotionUsed _, ActionRefused _, EnemyAttacked _,
+                 EnemySpecial _, HeroDefeated _, GameWon _ ->
+                    throw new IllegalArgumentException("Not an announcement: " + event);
         };
     }
 

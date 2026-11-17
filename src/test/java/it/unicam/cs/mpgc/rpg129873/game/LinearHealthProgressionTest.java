@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-public class LinearHealthProgressionTest {
+class LinearHealthProgressionTest {
 
     private final HealthProgression progression = new LinearHealthProgression();
 
