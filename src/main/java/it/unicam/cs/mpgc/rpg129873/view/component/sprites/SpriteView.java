@@ -24,9 +24,8 @@ public class SpriteView extends StackPane {
     private final ImageView imageView = new ImageView();
     private Timeline timeline;
     private SpriteSpec currentSpec;
-    private AnimationSpec currentAnimation;
+    private FramePlayer player;
     private String currentId;
-    private int frameIndex;
 
     public SpriteView(SpriteProvider provider, Color fallbackColor, int defaultScale) {
         if (defaultScale < 1) {
@@ -53,27 +52,25 @@ public class SpriteView extends StackPane {
         currentId = id;
         stopTimeline();
         currentSpec = null;
+        player = null;
         provider.spriteFor(id).ifPresentOrElse(this::showSprite, this::showPlaceholder);
     }
 
     public void play(String animationName) {
-        if (currentSpec == null) {
-            return;
-        }
-        AnimationSpec animation = currentSpec.animations().get(animationName);
-        if (animation != null) {
-            start(animation);
+        if (player != null && player.play(animationName)) {
+            restartTimeline();
         }
     }
 
     private void showSprite(Sprite sprite) {
         currentSpec = sprite.spec();
+        player = new FramePlayer(currentSpec.animations());
         int scale = currentSpec.scale() > 0 ? currentSpec.scale() : defaultScale;
         imageView.setImage(sprite.sheet());
         imageView.setFitWidth((double) currentSpec.frameWidth() * scale);
         imageView.setFitHeight((double) currentSpec.frameHeight() * scale);
         setSpriteVisible(true);
-        start(currentSpec.animations().get(SpriteSpec.IDLE));
+        restartTimeline();
     }
 
     private void showPlaceholder() {
@@ -87,13 +84,11 @@ public class SpriteView extends StackPane {
         placeholder.setManaged(!spriteVisible);
     }
 
-    private void start(AnimationSpec animation) {
+    private void restartTimeline() {
         stopTimeline();
-        currentAnimation = animation;
-        frameIndex = 0;
         showFrame();
-        if (animation.frames() > 1 || !animation.loop()) {
-            timeline = new Timeline(new KeyFrame(Duration.millis(animation.frameMillis()),
+        if (player.needsTimer()) {
+            timeline = new Timeline(new KeyFrame(Duration.millis(player.frameMillis()),
                     e -> nextFrame()));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
@@ -105,22 +100,17 @@ public class SpriteView extends StackPane {
             stopTimeline();
             return;
         }
-        if (frameIndex + 1 < currentAnimation.frames()) {
-            frameIndex++;
-            showFrame();
-        } else if (currentAnimation.loop()) {
-            frameIndex = 0;
-            showFrame();
+        if (player.advance()) {
+            restartTimeline();
         } else {
-            start(currentSpec.animations().get(SpriteSpec.IDLE));
+            showFrame();
         }
     }
 
     private void showFrame() {
-        int column = currentAnimation.startFrame() + frameIndex;
         imageView.setViewport(new Rectangle2D(
-                (double) column * currentSpec.frameWidth(),
-                (double) currentAnimation.row() * currentSpec.frameHeight(),
+                (double) player.column() * currentSpec.frameWidth(),
+                (double) player.row() * currentSpec.frameHeight(),
                 currentSpec.frameWidth(),
                 currentSpec.frameHeight()));
     }
