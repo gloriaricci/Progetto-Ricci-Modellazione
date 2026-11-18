@@ -115,10 +115,8 @@ public class SpriteView extends StackPane {
                 currentSpec.frameHeight()));
     }
 
-    // La vista è "staccata" quando la sua scena non è più mostrata da nessuna finestra
     private boolean isDetached() {
-        Scene scene = getScene();
-        return scene != null && scene.getWindow() == null;
+        return getScene() == null || getScene().getWindow() == null;
     }
 
     private void stopTimeline() {

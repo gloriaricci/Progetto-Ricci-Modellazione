@@ -86,6 +86,7 @@ public class GameView {
 
         HBox fighters = new HBox(120, heroPanel, enemyPanel);
         fighters.setAlignment(Pos.CENTER);
+        fighters.setFillHeight(false);
 
         VBox bottom = new VBox(12, log, actionBar);
         bottom.setPadding(new Insets(16));

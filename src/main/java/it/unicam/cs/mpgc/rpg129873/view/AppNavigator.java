@@ -28,6 +28,7 @@ public class AppNavigator {
     private final GuiEventListener listener;
     private final BackgroundProvider backgrounds;
     private final SpriteProvider sprites;
+    private Scene scene;
 
     public AppNavigator(Stage stage, GameRepository repository, GameFactory factory, GuiEventListener listener, BackgroundProvider backgrounds, SpriteProvider sprites) {
         this.stage = Objects.requireNonNull(stage);
@@ -84,12 +85,16 @@ public class AppNavigator {
     }
 
     private void show(Parent root) {
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
-        URL stylesheet = AppNavigator.class.getResource(STYLESHEET);
-        if (stylesheet != null) {
-            scene.getStylesheets().add(stylesheet.toExternalForm());
+        if (scene == null) {
+            scene = new Scene(root, WIDTH, HEIGHT);
+            URL stylesheet = AppNavigator.class.getResource(STYLESHEET);
+            if (stylesheet != null) {
+                scene.getStylesheets().add(stylesheet.toExternalForm());
+            }
+            stage.setScene(scene);
+        } else {
+            scene.setRoot(root);
         }
-        stage.setScene(scene);
     }
 }
 
