@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg129873.reward.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class LevelFactory implements LevelProvider{
+public class LevelFactory implements LevelProvider {
 
     private static final List<Supplier<Level>> LEVELS = List.of(
             () -> new Level(1, List.of(new CollezionistaDiOssa()), new RewardScattoRapido()),

@@ -25,7 +25,8 @@ class GameTest {
 
     private Game singleEnemyGame(int enemyHp, int enemyAttack) {
         return newGame(List.of(
-                () -> new Level(1, List.of(new Enemy("e1", "Mostro", enemyHp, enemyAttack)), hero -> { })));
+                () -> new Level(1, List.of(new Enemy("e1", "Mostro", enemyHp, enemyAttack)), hero -> {
+                })));
     }
 
     private boolean happened(GameEvent event) {
@@ -121,7 +122,8 @@ class GameTest {
                 () -> new Level(1,
                         List.of(new Enemy("a", "Goblin A", 15, 5), new Enemy("b", "Goblin B", 15, 5)),
                         hero -> rewardApplied.set(true)),
-                () -> new Level(2, List.of(new Enemy("c", "Orco", 30, 5)), hero -> { })));
+                () -> new Level(2, List.of(new Enemy("c", "Orco", 30, 5)), hero -> {
+                })));
 
         game.playerAttack();
         assertEquals("Goblin B", game.getCurrentEnemy().getName());
@@ -139,8 +141,10 @@ class GameTest {
     @Test
     void changingLevelRaisesMaxHpAndRestoresHp() {
         Game game = newGame(List.of(
-                () -> new Level(1, List.of(new Enemy("a", "Goblin", 30, 20)), hero -> { }),
-                () -> new Level(2, List.of(new Enemy("b", "Orco", 1000, 5)), hero -> { })));
+                () -> new Level(1, List.of(new Enemy("a", "Goblin", 30, 20)), hero -> {
+                }),
+                () -> new Level(2, List.of(new Enemy("b", "Orco", 1000, 5)), hero -> {
+                })));
 
         game.playerAttack();
         game.enemyTurn();

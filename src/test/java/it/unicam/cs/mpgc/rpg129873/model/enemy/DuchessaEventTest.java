@@ -3,7 +3,7 @@ package it.unicam.cs.mpgc.rpg129873.model.enemy;
 import it.unicam.cs.mpgc.rpg129873.model.Hero;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DuchessaEventTest {
 

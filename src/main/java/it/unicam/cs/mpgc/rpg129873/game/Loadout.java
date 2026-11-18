@@ -7,11 +7,11 @@ import it.unicam.cs.mpgc.rpg129873.model.Hero;
 import java.util.ArrayList;
 import java.util.List;
 
-public record Loadout (String weapon, String passive, String activeAbility){
+public record Loadout(String weapon, String passive, String activeAbility) {
 
-    public static Loadout of (Hero hero){
+    public static Loadout of(Hero hero) {
         return new Loadout(
-                hero.getCurrentWeapon()!= null ? hero.getCurrentWeapon().getName() : null,
+                hero.getCurrentWeapon() != null ? hero.getCurrentWeapon().getName() : null,
                 hero.getPassive() != null ? hero.getPassive().getName() : null,
                 hero.hasActiveAbility() ? hero.getActiveAbility().getName() : null);
     }

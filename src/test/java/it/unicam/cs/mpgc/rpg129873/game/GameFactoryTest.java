@@ -7,7 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameFactoryTest {
 
-    private final GameFactory factory = new GameFactory(new LevelFactory(), event -> { });
+    private final GameFactory factory = new GameFactory(new LevelFactory(), event -> {
+    });
 
     @Test
     void newGameStartsAtLevelOneWithFullStats() {
@@ -63,10 +64,10 @@ class GameFactoryTest {
     }
 
     @Test
-    void finalBossIsBeatableWithTheAbilityAloneAndNoPotions(){
-        Game game = factory.restore(new GameState(5,260,0));
+    void finalBossIsBeatableWithTheAbilityAloneAndNoPotions() {
+        Game game = factory.restore(new GameState(5, 260, 0));
 
-        while(!game.isFinished()){
+        while (!game.isFinished()) {
             game.playerUseActiveAbility();
             game.enemyTurn();
         }

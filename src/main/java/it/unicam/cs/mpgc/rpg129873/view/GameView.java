@@ -1,20 +1,9 @@
 package it.unicam.cs.mpgc.rpg129873.view;
 
-import it.unicam.cs.mpgc.rpg129873.controller.AnimationCue;
-import it.unicam.cs.mpgc.rpg129873.controller.Announcement;
-import it.unicam.cs.mpgc.rpg129873.controller.EventAnimationMapper;
-import it.unicam.cs.mpgc.rpg129873.controller.EventTextFormatter;
-import it.unicam.cs.mpgc.rpg129873.controller.GameController;
+import it.unicam.cs.mpgc.rpg129873.controller.*;
 import it.unicam.cs.mpgc.rpg129873.game.GameEvent;
 import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
-import it.unicam.cs.mpgc.rpg129873.view.component.ActionBar;
-import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
-import it.unicam.cs.mpgc.rpg129873.view.component.DelayedTask;
-import it.unicam.cs.mpgc.rpg129873.view.component.EnemyTurnScheduler;
-import it.unicam.cs.mpgc.rpg129873.view.component.FighterPanel;
-import it.unicam.cs.mpgc.rpg129873.view.component.LevelBackground;
-import it.unicam.cs.mpgc.rpg129873.view.component.MessageLog;
-import it.unicam.cs.mpgc.rpg129873.view.component.OverlayView;
+import it.unicam.cs.mpgc.rpg129873.view.component.*;
 import it.unicam.cs.mpgc.rpg129873.view.component.sprites.SpriteProvider;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

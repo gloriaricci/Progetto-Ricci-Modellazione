@@ -28,7 +28,7 @@ public class EventTextFormatter {
         };
     }
 
-    public boolean isAnnouncement(GameEvent event){
+    public boolean isAnnouncement(GameEvent event) {
         return switch (event) {
             case LevelStarted _, RewardGained _, EnemyArrived _ -> true;
             case EnemyDefeated _, HeroAttacked _, AbilityUsed _, RecoilTaken _,

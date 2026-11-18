@@ -1,8 +1,8 @@
 package it.unicam.cs.mpgc.rpg129873.controller;
 
 import it.unicam.cs.mpgc.rpg129873.game.GameEvent.*;
-import org.junit.jupiter.api.Test;
 import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

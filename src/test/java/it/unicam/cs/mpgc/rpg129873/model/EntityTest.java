@@ -11,7 +11,8 @@ class EntityTest {
 
     @BeforeEach
     void setUp() {
-        entity = new Entity("e1", "Test", 100, 10) { };
+        entity = new Entity("e1", "Test", 100, 10) {
+        };
     }
 
     @Test
@@ -22,13 +23,16 @@ class EntityTest {
 
     @Test
     void nullOrBlankIdIsRejected() {
-        assertThrows(IllegalArgumentException.class, () -> new Entity(null, "x", 10, 1) { });
-        assertThrows(IllegalArgumentException.class, () -> new Entity("  ", "x", 10, 1) { });
+        assertThrows(IllegalArgumentException.class, () -> new Entity(null, "x", 10, 1) {
+        });
+        assertThrows(IllegalArgumentException.class, () -> new Entity("  ", "x", 10, 1) {
+        });
     }
 
     @Test
     void nullNameFallsBackToDefault() {
-        Entity unnamed = new Entity("id", null, 10, 1) { };
+        Entity unnamed = new Entity("id", null, 10, 1) {
+        };
         assertEquals("Unknown entity", unnamed.getName());
     }
 
@@ -89,6 +93,7 @@ class EntityTest {
     @Test
     void invalidMaxHpIsRejected() {
         assertThrows(IllegalArgumentException.class, () -> entity.setMaxHp(0));
-        assertThrows(IllegalArgumentException.class, () -> new Entity("e", "x", 0, 1) { });
+        assertThrows(IllegalArgumentException.class, () -> new Entity("e", "x", 0, 1) {
+        });
     }
 }

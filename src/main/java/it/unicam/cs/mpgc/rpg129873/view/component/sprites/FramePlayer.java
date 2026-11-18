@@ -53,7 +53,9 @@ public class FramePlayer {
         return current.frameMillis();
     }
 
-    /** Serve un timer solo se c'è qualcosa da far avanzare o da far tornare a idle. */
+    /**
+     * Serve un timer solo se c'è qualcosa da far avanzare o da far tornare a idle.
+     */
     public boolean needsTimer() {
         return current.frames() > 1 || !current.loop();
     }

@@ -34,6 +34,7 @@
 .attack-button {
     -fx-border-color: #fd3ddd;
 }
+
 .ability-button {
     -fx-background-color: #ffd700;
     -fx-background-radius: 50;
@@ -96,17 +97,17 @@
 
 .overlay-title {
     -fx-font-size: 28px;
-    -fx-text-fill: linear-gradient(to right,#9e14c5, #fd3ddd);
+    -fx-text-fill: linear-gradient(to right, #9e14c5, #fd3ddd);
 }
 
 .overlay-subtitle {
     -fx-font-size: 16px;
-    -fx-text-fill: linear-gradient(to right,#9e14c5, #fd3ddd);
+    -fx-text-fill: linear-gradient(to right, #9e14c5, #fd3ddd);
 }
 
 .overlay-hint {
     -fx-font-size: 10px;
-    -fx-text-fill: linear-gradient(to right,#9e14c5, #fd3ddd);
+    -fx-text-fill: linear-gradient(to right, #9e14c5, #fd3ddd);
 }
 
 .log-line {

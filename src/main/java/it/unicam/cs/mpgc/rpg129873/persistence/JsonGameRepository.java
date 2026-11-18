@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Optional;
-import java.nio.file.AtomicMoveNotSupportedException;
-import java.nio.file.StandardCopyOption;
 
-public class JsonGameRepository implements GameRepository{
+public class JsonGameRepository implements GameRepository {
 
     private final Path file;
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -53,10 +53,10 @@ public class JsonGameRepository implements GameRepository{
     }
 
     @Override
-    public void clear(){
-        try{
+    public void clear() {
+        try {
             Files.deleteIfExists(file);
-        }catch(IOException e){
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }

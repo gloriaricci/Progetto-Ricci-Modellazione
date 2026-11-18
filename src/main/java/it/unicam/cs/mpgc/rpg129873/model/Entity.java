@@ -7,12 +7,12 @@ public abstract class Entity {
     private int currentHp;
     private final int attackPower;
 
-    public Entity(String id, String name, int maxHp, int attackPower){
-        if(id == null || id.isBlank()){
+    public Entity(String id, String name, int maxHp, int attackPower) {
+        if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("The entity id cannot be null or blank");
         }
 
-        if (maxHp < 1){
+        if (maxHp < 1) {
             throw new IllegalArgumentException("The max hp must be at least 1");
         }
 
@@ -23,50 +23,53 @@ public abstract class Entity {
         this.attackPower = attackPower;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
 
-    public int getMaxHp(){
+    public int getMaxHp() {
         return maxHp;
     }
-    public void setMaxHp(int maxHp){
-        if (maxHp < 1){
+
+    public void setMaxHp(int maxHp) {
+        if (maxHp < 1) {
             throw new IllegalArgumentException("The max hp must be at least 1");
         }
         this.maxHp = maxHp;
         this.currentHp = Math.min(this.currentHp, maxHp);
     }
 
-    public int getCurrentHp (){
+    public int getCurrentHp() {
         return currentHp;
     }
-    public void setCurrentHp(int currentHp){
-        this.currentHp = Math.max (0, Math.min(currentHp, this.maxHp));
+
+    public void setCurrentHp(int currentHp) {
+        this.currentHp = Math.max(0, Math.min(currentHp, this.maxHp));
     }
 
-    public int getAttackPower(){
+    public int getAttackPower() {
         return attackPower;
     }
 
-    public void takeDamage(int damage){
-        if (damage < 0){
+    public void takeDamage(int damage) {
+        if (damage < 0) {
             return;
         }
-        this.currentHp = Math.max (0, this.currentHp - damage);
+        this.currentHp = Math.max(0, this.currentHp - damage);
     }
 
-    public void heal (int amount){
-        if (amount < 0){
+    public void heal(int amount) {
+        if (amount < 0) {
             return;
         }
         this.currentHp = Math.min(this.maxHp, this.currentHp + amount);
     }
 
-    public boolean isAlive(){
+    public boolean isAlive() {
         return this.currentHp > 0;
     }
 

@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public record AnimationCue(Actor actor, String animation) {
 
-    public enum Actor { HERO, ENEMY }
+    public enum Actor {HERO, ENEMY}
 
     public AnimationCue {
         Objects.requireNonNull(actor);

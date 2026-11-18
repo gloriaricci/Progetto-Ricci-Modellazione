@@ -8,6 +8,7 @@ import javafx.scene.shape.Circle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 public class PotionIndicator extends HBox {
 
     private static final double RADIUS = 16;

@@ -14,7 +14,8 @@ import java.util.Objects;
 public class SpriteConfigLoader {
 
     private static final String DEFAULT_RESOURCE = "/images/sprites/sprites.json";
-    private static final Type CONFIG_TYPE = new TypeToken<Map<String, SpriteSpec>>() { }.getType();
+    private static final Type CONFIG_TYPE = new TypeToken<Map<String, SpriteSpec>>() {
+    }.getType();
 
     private final String resource;
 

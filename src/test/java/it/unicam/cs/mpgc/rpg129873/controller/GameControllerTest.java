@@ -20,15 +20,18 @@ class GameControllerTest {
     private final InMemoryRepository repository = new InMemoryRepository();
 
     private GameController controller(List<Supplier<Level>> levels) {
-        Game game = new GameFactory(new FakeLevelProvider(levels), message -> { }).newGame();
+        Game game = new GameFactory(new FakeLevelProvider(levels), message -> {
+        }).newGame();
         return new GameController(game, new CheckpointManager(game, repository));
     }
 
     @Test
     void passingToTheNextLevelSavesACheckpoint() {
         GameController controller = controller(List.of(
-                () -> new Level(1, List.of(new Enemy("a", "Goblin", 15, 5)), hero -> { }),
-                () -> new Level(2, List.of(new Enemy("b", "Orco", 1000, 5)), hero -> { })));
+                () -> new Level(1, List.of(new Enemy("a", "Goblin", 15, 5)), hero -> {
+                }),
+                () -> new Level(2, List.of(new Enemy("b", "Orco", 1000, 5)), hero -> {
+                })));
 
         controller.onAttack();
 
@@ -38,7 +41,8 @@ class GameControllerTest {
     @Test
     void aNormalAttackDoesNotSave() {
         GameController controller = controller(List.of(
-                () -> new Level(1, List.of(new Enemy("a", "Goblin", 1000, 5)), hero -> { })));
+                () -> new Level(1, List.of(new Enemy("a", "Goblin", 1000, 5)), hero -> {
+                })));
 
         controller.onAttack();
 
@@ -49,7 +53,8 @@ class GameControllerTest {
     void winningTheGameClearsTheSave() {
         repository.save(new GameState(1, 100, 2));
         GameController controller = controller(List.of(
-                () -> new Level(1, List.of(new Enemy("a", "Goblin", 15, 5)), hero -> { })));
+                () -> new Level(1, List.of(new Enemy("a", "Goblin", 15, 5)), hero -> {
+                })));
 
         controller.onAttack();
 
@@ -62,7 +67,8 @@ class GameControllerTest {
     void losingKeepsTheCheckpoint() {
         repository.save(new GameState(1, 100, 2));
         GameController controller = controller(List.of(
-                () -> new Level(1, List.of(new Enemy("a", "Goblin", 1000, 100)), hero -> { })));
+                () -> new Level(1, List.of(new Enemy("a", "Goblin", 1000, 100)), hero -> {
+                })));
 
         controller.onAttack();
         assertTrue(controller.isEnemyTurnPending());
