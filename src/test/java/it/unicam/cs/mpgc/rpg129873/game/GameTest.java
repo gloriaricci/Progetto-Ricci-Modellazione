@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg129873.game.GameEvent.*;
 import it.unicam.cs.mpgc.rpg129873.level.Level;
 import it.unicam.cs.mpgc.rpg129873.level.LevelProvider;
 import it.unicam.cs.mpgc.rpg129873.model.Enemy;
+import it.unicam.cs.mpgc.rpg129873.level.FakeLevelProvider;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -296,24 +297,5 @@ class GameTest {
         assertTrue(game.status().finished());
         assertFalse(game.status().won());
         assertFalse(game.isWon());
-    }
-
-    private static class FakeLevelProvider implements LevelProvider {
-
-        private final List<Supplier<Level>> levels;
-
-        FakeLevelProvider(List<Supplier<Level>> levels) {
-            this.levels = levels;
-        }
-
-        @Override
-        public Level createLevel(int number) {
-            return levels.get(number - 1).get();
-        }
-
-        @Override
-        public int getTotalLevels() {
-            return levels.size();
-        }
     }
 }

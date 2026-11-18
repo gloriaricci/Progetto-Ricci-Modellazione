@@ -4,8 +4,8 @@ import it.unicam.cs.mpgc.rpg129873.game.Game;
 import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
 import it.unicam.cs.mpgc.rpg129873.game.GameState;
 import it.unicam.cs.mpgc.rpg129873.level.Level;
-import it.unicam.cs.mpgc.rpg129873.level.LevelProvider;
 import it.unicam.cs.mpgc.rpg129873.model.Enemy;
+import it.unicam.cs.mpgc.rpg129873.level.FakeLevelProvider;
 import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
 import org.junit.jupiter.api.Test;
 
@@ -96,25 +96,6 @@ class GameControllerTest {
         @Override
         public void clear() {
             saved = null;
-        }
-    }
-
-    private static class FakeLevelProvider implements LevelProvider {
-
-        private final List<Supplier<Level>> levels;
-
-        FakeLevelProvider(List<Supplier<Level>> levels) {
-            this.levels = levels;
-        }
-
-        @Override
-        public Level createLevel(int number) {
-            return levels.get(number - 1).get();
-        }
-
-        @Override
-        public int getTotalLevels() {
-            return levels.size();
         }
     }
 }

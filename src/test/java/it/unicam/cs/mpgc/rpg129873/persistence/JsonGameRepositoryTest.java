@@ -68,6 +68,18 @@ class JsonGameRepositoryTest {
     }
 
     @Test
+    void aSaveWithOutOfRangeValuesIsTreatedAsNoSave() throws IOException {
+        Files.writeString(file, "{\"levelNumber\":0,\"currentHp\":50,\"potions\":1}");
+        assertTrue(repository.load().isEmpty());
+
+        Files.writeString(file, "{\"levelNumber\":2,\"currentHp\":-5,\"potions\":1}");
+        assertTrue(repository.load().isEmpty());
+
+        Files.writeString(file, "{\"levelNumber\":2,\"currentHp\":50,\"potions\":-1}");
+        assertTrue(repository.load().isEmpty());
+    }
+
+    @Test
     void clearRemovesTheSavedState() {
         repository.save(new GameState(3, 70, 1));
 
