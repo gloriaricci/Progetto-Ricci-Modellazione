@@ -97,7 +97,8 @@ public class Game {
         int heroHpBefore = player.getCurrentHp();
         enemy.attack(player);
         listener.onEvent(new EnemyAttacked(enemy.getName(), heroHpBefore - player.getCurrentHp()));
-        enemy.consumeEvent().ifPresent(effect -> listener.onEvent(new EnemySpecial(effect)));
+        enemy.consumeEvent().ifPresent(effect ->
+                listener.onEvent(new EnemySpecial(enemy.getName(), effect)));
         checkGameState();
     }
 

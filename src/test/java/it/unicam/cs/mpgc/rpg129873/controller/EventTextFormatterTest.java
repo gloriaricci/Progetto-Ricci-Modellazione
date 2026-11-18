@@ -49,8 +49,8 @@ class EventTextFormatterTest {
         assertFalse(formatter.isAnnouncement(new PotionUsed(1)));
         assertFalse(formatter.isAnnouncement(new ActionRefused(RefusalReason.NO_POTIONS)));
         assertFalse(formatter.isAnnouncement(new EnemyAttacked("Boss", 15)));
-        assertFalse(formatter.isAnnouncement(
-                new EnemySpecial(new EnemyEffect(EnemyEffect.Kind.LIFE_STEAL, 10))));
+        assertFalse(formatter.isAnnouncement(new EnemySpecial("Boss",
+                new EnemyEffect(EnemyEffect.Kind.LIFE_STEAL, 10))));
         assertFalse(formatter.isAnnouncement(new HeroDefeated()));
         assertFalse(formatter.isAnnouncement(new GameWon()));
     }
@@ -77,9 +77,11 @@ class EventTextFormatterTest {
 
     @Test
     void enemySpecialsAreDescribedByKindAndAmount() {
-        assertEquals("Ruba vita!! La duchessa recupera: 10 punti vita",
-                formatter.format(new EnemySpecial(new EnemyEffect(EnemyEffect.Kind.LIFE_STEAL, 10))));
-        assertEquals("Distorsione temporale!! il barone ricarica 20 punti vita.",
-                formatter.format(new EnemySpecial(new EnemyEffect(EnemyEffect.Kind.TIME_DISTORTION, 20))));
+        assertEquals("Ruba vita!! Duchessa di Sangue recupera: 10 punti vita.",
+                formatter.format(new EnemySpecial("Duchessa di Sangue",
+                        new EnemyEffect(EnemyEffect.Kind.LIFE_STEAL, 10))));
+        assertEquals("Distorsione temporale!! Barone dello Shimmer ricarica 20 punti vita.",
+                formatter.format(new EnemySpecial("Barone dello Shimmer",
+                        new EnemyEffect(EnemyEffect.Kind.TIME_DISTORTION, 20))));
     }
 }

@@ -38,8 +38,7 @@ public sealed interface GameEvent {
     record EnemyAttacked(String enemyName, int damage) implements GameEvent {
     }
 
-    record EnemySpecial(EnemyEffect effect) implements GameEvent {
-    }
+    record EnemySpecial(String enemyName, EnemyEffect effect) implements GameEvent { }
 
     record RewardGained(RewardKind kind, String name) implements GameEvent {
     }

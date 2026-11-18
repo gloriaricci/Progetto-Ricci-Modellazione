@@ -20,7 +20,7 @@ public class EventTextFormatter {
             case PotionUsed e -> "Hai usato una pozione. Pozioni rimanenti: " + e.remaining();
             case ActionRefused e -> refusalText(e.reason());
             case EnemyAttacked e -> e.enemyName() + " ti attacca e infligge " + e.damage() + " danni.";
-            case EnemySpecial e -> specialText(e.effect());
+            case EnemySpecial e -> specialText(e.enemyName(), e.effect());
             case RewardGained e -> rewardText(e);
             case HeroDefeated _ -> "Sei stato sconfitto. Game over.";
             case GameWon _ -> "COMPLIMENTI! Hai sconfitto il Barone dello Shimmer "
@@ -64,10 +64,11 @@ public class EventTextFormatter {
         };
     }
 
-    private String specialText(EnemyEffect effect) {
+    private String specialText(String enemyName, EnemyEffect effect) {
         return switch (effect.kind()) {
-            case LIFE_STEAL -> "Ruba vita!! La duchessa recupera: " + effect.amount() + " punti vita";
-            case TIME_DISTORTION -> "Distorsione temporale!! il barone ricarica "
+            case LIFE_STEAL -> "Ruba vita!! " + enemyName + " recupera: "
+                    + effect.amount() + " punti vita.";
+            case TIME_DISTORTION -> "Distorsione temporale!! " + enemyName + " ricarica "
                     + effect.amount() + " punti vita.";
         };
     }
