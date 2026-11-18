@@ -2,13 +2,6 @@
 .root {
     -fx-font-family: "Press Start 2P", "Monospaced";
     -fx-font-size: 12px;
-    -nox-viola: #9e14c5;
-    -nox-fucsia: #fd3ddd;
-    -nox-ciano: #4df0ff;
-    -nox-nemico: #6603cc;
-    -nox-oro: #ffd700;
-    -nox-rosso: #dc143c;
-
 }
 
 .menu-title {

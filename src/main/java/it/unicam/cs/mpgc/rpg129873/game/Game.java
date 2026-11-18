@@ -72,7 +72,6 @@ public class Game {
             return;
         }
         if (!player.hasActiveAbility()) {
-            listener.onEvent(new ActionRefused(RefusalReason.NO_ABILITY));
             return;
         }
         beginPlayerTurn();

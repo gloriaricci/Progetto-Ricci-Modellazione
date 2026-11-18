@@ -29,6 +29,9 @@ public class GameFactory {
     }
 
     public Game restore(GameState state) {
+        if (state.levelNumber() > levelProvider.getTotalLevels()) {
+            throw new IllegalArgumentException("Invalid level in save: " + state.levelNumber());
+        }
         Nox nox = createNox(state.levelNumber());
         for (int i = 1; i < state.levelNumber(); i++) {
             levelProvider.createLevel(i).getReward().apply(nox);

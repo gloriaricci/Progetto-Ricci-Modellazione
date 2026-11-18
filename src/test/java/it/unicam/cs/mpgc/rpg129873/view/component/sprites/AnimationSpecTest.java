@@ -1,7 +1,6 @@
-package it.unicam.cs.mpgc.rpg129873.view.component;
+package it.unicam.cs.mpgc.rpg129873.view.component.sprites;
 
 import com.google.gson.Gson;
-import it.unicam.cs.mpgc.rpg129873.view.component.sprites.AnimationSpec;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

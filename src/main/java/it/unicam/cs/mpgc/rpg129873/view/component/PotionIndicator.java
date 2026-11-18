@@ -35,6 +35,6 @@ public class PotionIndicator extends HBox {
         for (int i = 0; i < circles.size(); i++) {
             circles.get(i).setFill(i < available ? AVAILABLE : USED);
         }
-        setDisable(!enabled || available == 0);
+        setDisable(!enabled);
     }
 }

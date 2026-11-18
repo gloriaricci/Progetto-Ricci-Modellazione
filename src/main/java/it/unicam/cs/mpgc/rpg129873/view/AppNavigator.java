@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg129873.controller.CheckpointManager;
 import it.unicam.cs.mpgc.rpg129873.controller.GameController;
 import it.unicam.cs.mpgc.rpg129873.game.Game;
 import it.unicam.cs.mpgc.rpg129873.game.GameFactory;
+import it.unicam.cs.mpgc.rpg129873.game.GameState;
 import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
 import it.unicam.cs.mpgc.rpg129873.persistence.GameRepository;
 import it.unicam.cs.mpgc.rpg129873.view.component.BackgroundProvider;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.Optional;
 
 public class AppNavigator {
     private static final double WIDTH = 960;
@@ -42,7 +44,17 @@ public class AppNavigator {
     }
 
     private void play() {
-        startGame(repository.load().map(factory::restore).orElseGet(factory::newGame));
+        startGame(loadSavedGame().orElseGet(factory::newGame));
+    }
+
+    private Optional<Game> loadSavedGame() {
+        Optional<GameState> saved = repository.load();
+        try {
+            return saved.map(factory::restore);
+        } catch (IllegalArgumentException e) {
+            repository.clear();
+            return Optional.empty();
+        }
     }
 
     private void restart() {

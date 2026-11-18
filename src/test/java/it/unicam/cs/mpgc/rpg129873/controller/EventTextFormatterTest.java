@@ -27,7 +27,7 @@ class EventTextFormatterTest {
     void refusalsHaveTheirOwnText() {
         assertEquals("La tua vita è già al massimo.",
                 formatter.format(new ActionRefused(RefusalReason.FULL_HP)));
-        assertEquals("Non hai più pozioni di cura.",
+        assertEquals("Non ci sono più pozioni.",
                 formatter.format(new ActionRefused(RefusalReason.NO_POTIONS)));
     }
 
@@ -46,7 +46,7 @@ class EventTextFormatterTest {
         assertFalse(formatter.isAnnouncement(new RecoilTaken(5)));
         assertFalse(formatter.isAnnouncement(new HeroHealed(15)));
         assertFalse(formatter.isAnnouncement(new PotionUsed(1)));
-        assertFalse(formatter.isAnnouncement(new ActionRefused(RefusalReason.NO_ABILITY)));
+        assertFalse(formatter.isAnnouncement(new ActionRefused(RefusalReason.NO_POTIONS)));
         assertFalse(formatter.isAnnouncement(new EnemyAttacked("Boss", 15)));
         assertFalse(formatter.isAnnouncement(new EnemySpecial("Qualcosa")));
         assertFalse(formatter.isAnnouncement(new HeroDefeated()));

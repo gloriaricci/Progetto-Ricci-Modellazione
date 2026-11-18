@@ -242,7 +242,7 @@ class GameTest {
 
         game.playerUseActiveAbility();
 
-        assertTrue(happened(new ActionRefused(RefusalReason.NO_ABILITY)));
+        assertTrue(events.isEmpty());
         assertFalse(game.isEnemyTurnPending());
         assertEquals(60, game.getCurrentEnemy().getCurrentHp());
         assertEquals(100, game.snapshot().currentHp());

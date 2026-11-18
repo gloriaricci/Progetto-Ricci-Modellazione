@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg129873.game;
 
 public sealed interface GameEvent {
 
-    enum RefusalReason { FULL_HP, NO_POTIONS, NO_ABILITY }
+    enum RefusalReason { FULL_HP, NO_POTIONS }
 
     enum RewardKind { WEAPON, PASSIVE, ACTIVE }
 

@@ -73,4 +73,10 @@ class GameFactoryTest {
 
         assertTrue(game.isWon());
     }
+
+    @Test
+    void restoreRejectsALevelBeyondTheLastOne() {
+        assertThrows(IllegalArgumentException.class,
+                () -> factory.restore(new GameState(6, 100, 2)));
+    }
 }

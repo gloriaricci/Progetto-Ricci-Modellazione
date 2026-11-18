@@ -51,8 +51,7 @@ public class EventTextFormatter {
     private String refusalText(RefusalReason reason) {
         return switch (reason) {
             case FULL_HP -> "La tua vita è già al massimo.";
-            case NO_POTIONS -> "Non hai più pozioni di cura.";
-            case NO_ABILITY -> "Non hai ancora nessuna abilità attiva.";
+            case NO_POTIONS -> "Non ci sono più pozioni.";
         };
     }
 
