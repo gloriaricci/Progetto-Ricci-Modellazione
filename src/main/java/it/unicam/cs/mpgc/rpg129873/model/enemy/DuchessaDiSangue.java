@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg129873.model.enemy;
 
 import it.unicam.cs.mpgc.rpg129873.model.Enemy;
 import it.unicam.cs.mpgc.rpg129873.model.Hero;
+import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
 
 public class DuchessaDiSangue extends Enemy {
     private int turnCounter;
@@ -19,7 +20,7 @@ public class DuchessaDiSangue extends Enemy {
         if (turnCounter >= 2){
             int lifeSteal = 10;
             this.heal(lifeSteal);
-            setEvent("Ruba vita!! La duchessa recupera: "+ lifeSteal+ " punti vita");
+            setEvent(new EnemyEffect(EnemyEffect.Kind.LIFE_STEAL, lifeSteal));
             turnCounter = 0;
         }
     }

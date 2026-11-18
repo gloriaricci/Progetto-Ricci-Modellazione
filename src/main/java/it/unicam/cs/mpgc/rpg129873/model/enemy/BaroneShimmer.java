@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg129873.model.enemy;
 
 import it.unicam.cs.mpgc.rpg129873.model.Enemy;
 import it.unicam.cs.mpgc.rpg129873.model.Hero;
+import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
 
 public class BaroneShimmer extends Enemy {
 
@@ -20,7 +21,7 @@ public class BaroneShimmer extends Enemy {
 
          if (turnCounter % 2 == 0){
              heal(HEAL_AMOUNT);
-             setEvent("Distorsione temporale!! il barone ricarica " + HEAL_AMOUNT + " punti vita.");
+             setEvent(new EnemyEffect(EnemyEffect.Kind.TIME_DISTORTION, HEAL_AMOUNT));
          }
     }
 }

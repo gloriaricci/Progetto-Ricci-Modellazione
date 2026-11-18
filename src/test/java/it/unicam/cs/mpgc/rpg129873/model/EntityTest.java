@@ -78,4 +78,17 @@ class EntityTest {
         entity.setMaxHp(50);
         assertEquals(50, entity.getCurrentHp());
     }
+
+    @Test
+    void negativeHealIsIgnored() {
+        entity.takeDamage(30);
+        entity.heal(-10);
+        assertEquals(70, entity.getCurrentHp());
+    }
+
+    @Test
+    void invalidMaxHpIsRejected() {
+        assertThrows(IllegalArgumentException.class, () -> entity.setMaxHp(0));
+        assertThrows(IllegalArgumentException.class, () -> new Entity("e", "x", 0, 1) { });
+    }
 }

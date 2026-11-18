@@ -11,6 +11,11 @@ public abstract class Entity {
         if(id == null || id.isBlank()){
             throw new IllegalArgumentException("The entity id cannot be null or blank");
         }
+
+        if (maxHp < 1){
+            throw new IllegalArgumentException("The max hp must be at least 1");
+        }
+
         this.id = id;
         this.name = name != null ? name : "Unknown entity";
         this.maxHp = maxHp;
@@ -29,6 +34,9 @@ public abstract class Entity {
         return maxHp;
     }
     public void setMaxHp(int maxHp){
+        if (maxHp < 1){
+            throw new IllegalArgumentException("The max hp must be at least 1");
+        }
         this.maxHp = maxHp;
         this.currentHp = Math.min(this.currentHp, maxHp);
     }
@@ -52,6 +60,9 @@ public abstract class Entity {
     }
 
     public void heal (int amount){
+        if (amount < 0){
+            return;
+        }
         this.currentHp = Math.min(this.maxHp, this.currentHp + amount);
     }
 

@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg129873.controller;
 
 import it.unicam.cs.mpgc.rpg129873.game.GameEvent.*;
 import org.junit.jupiter.api.Test;
+import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +49,8 @@ class EventTextFormatterTest {
         assertFalse(formatter.isAnnouncement(new PotionUsed(1)));
         assertFalse(formatter.isAnnouncement(new ActionRefused(RefusalReason.NO_POTIONS)));
         assertFalse(formatter.isAnnouncement(new EnemyAttacked("Boss", 15)));
-        assertFalse(formatter.isAnnouncement(new EnemySpecial("Qualcosa")));
+        assertFalse(formatter.isAnnouncement(
+                new EnemySpecial(new EnemyEffect(EnemyEffect.Kind.LIFE_STEAL, 10))));
         assertFalse(formatter.isAnnouncement(new HeroDefeated()));
         assertFalse(formatter.isAnnouncement(new GameWon()));
     }
@@ -71,5 +73,13 @@ class EventTextFormatterTest {
     void toAnnouncementRejectsEventsThatAreNotAnnouncements() {
         assertThrows(IllegalArgumentException.class,
                 () -> formatter.toAnnouncement(new PotionUsed(1)));
+    }
+
+    @Test
+    void enemySpecialsAreDescribedByKindAndAmount() {
+        assertEquals("Ruba vita!! La duchessa recupera: 10 punti vita",
+                formatter.format(new EnemySpecial(new EnemyEffect(EnemyEffect.Kind.LIFE_STEAL, 10))));
+        assertEquals("Distorsione temporale!! il barone ricarica 20 punti vita.",
+                formatter.format(new EnemySpecial(new EnemyEffect(EnemyEffect.Kind.TIME_DISTORTION, 20))));
     }
 }

@@ -1,5 +1,7 @@
 package it.unicam.cs.mpgc.rpg129873.game;
 
+import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
+
 public sealed interface GameEvent {
 
     enum RefusalReason { FULL_HP, NO_POTIONS }
@@ -26,7 +28,7 @@ public sealed interface GameEvent {
 
     record EnemyAttacked(String enemyName, int damage) implements GameEvent { }
 
-    record EnemySpecial(String message) implements GameEvent { }
+    record EnemySpecial(EnemyEffect effect) implements GameEvent { }
 
     record RewardGained(RewardKind kind, String name) implements GameEvent { }
 
