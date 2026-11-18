@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,6 +48,16 @@ class JsonGameRepositoryTest {
         repository.save(new GameState(4, 60, 1));
 
         assertEquals(Optional.of(new GameState(4, 60, 1)), repository.load());
+    }
+
+    @Test
+    void savingLeavesNoTemporaryFileBehind() throws IOException {
+        repository.save(new GameState(3, 70, 1));
+
+        try (var files = Files.list(tempDir)) {
+            List<String> names = files.map(p -> p.getFileName().toString()).toList();
+            assertEquals(List.of("save.json"), names);
+        }
     }
 
     @Test

@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.StandardCopyOption;
 
 public class JsonGameRepository implements GameRepository{
 
@@ -24,8 +26,12 @@ public class JsonGameRepository implements GameRepository{
 
     @Override
     public void save(GameState state) {
-        try (Writer writer = Files.newBufferedWriter(file)) {
-            gson.toJson(state, writer);
+        Path temporary = file.resolveSibling(file.getFileName() + ".tmp");
+        try {
+            try (Writer writer = Files.newBufferedWriter(temporary)) {
+                gson.toJson(state, writer);
+            }
+            replaceFileWith(temporary);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -52,6 +58,15 @@ public class JsonGameRepository implements GameRepository{
             Files.deleteIfExists(file);
         }catch(IOException e){
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private void replaceFileWith(Path temporary) throws IOException {
+        try {
+            Files.move(temporary, file,
+                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        } catch (AtomicMoveNotSupportedException e) {
+            Files.move(temporary, file, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 }
