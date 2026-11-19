@@ -1,82 +1,50 @@
-# 📌 Nome del Progetto
+# Nox
 
-Breve descrizione del progetto (2-3 righe):  
-Spiega cosa fa il programma e a cosa serve.
+Nox è un gioco di ruolo a turni in Java con interfaccia grafica JavaFX. La protagonista, Nox, attraversa 5 livelli e affronta un boss alla fine di ciascuno, fino al creatore dello Shimmer. Non ci sono inventario né negozi: ogni nuova arma o abilità sostituisce la precedente.
 
----
+Progetto per il corso di Metodologie di Programmazione (Unicam, AA 2025/26).
 
-## 🚀 Come eseguire il progetto
+## Requisiti
 
-### Prerequisiti
+- Java 25 (se non è installato, Gradle prova a scaricarlo da solo)
+- Non serve installare Gradle: nel repository c'è il wrapper
 
-- Java 25 (LTS)
-- Gradle
-
-### Istruzioni
+## Come eseguire il progetto
 
 ```bash
-git clone <url-del-repository>
-cd <nome-cartella>
-```
-
-### Build del progetto
-
-```bash
+git clone https://github.com/gloriaricci/Progetto-Ricci-Modellazione.git
+cd Progetto-Ricci-Modellazione
 ./gradlew build
-```
-
-### Esecuzione
-
-```bash
 ./gradlew run
 ```
 
----
+Per lanciare solo i test: `./gradlew test`
 
-## 🤖 Uso di strumenti di AI
+## Come si gioca
 
-Indicare **se e come** sono stati utilizzati strumenti di AI (es. ChatGPT, Copilot, ecc.).
-Descrivere in modo chiaro **per quali attività** e **con quale livello di intervento personale**.
+- **Nuova partita / Continua**: dal menu si riparte da zero oppure dall'ultimo checkpoint, salvato all'inizio di ogni livello nel file `nox-save.json`.
+- **Attacco**: attacca il nemico con l'arma corrente.
+- **Pozioni**: due cerchi che curano Nox; diventano grigi quando sono usati.
+- **Abilità**: il pulsante compare quando Nox ha un'abilità da attivare.
 
-È importante dimostrare che:
+## Documentazione
 
-* il codice è stato **compreso**
-* l’AI è stata usata come **supporto**, non come sostituto
+La descrizione completa del progetto (funzionalità, responsabilità, classi e interfacce, persistenza, estensibilità) è nella [Wiki del repository](https://github.com/gloriaricci/Progetto-Ricci-Modellazione/wiki).
 
----
+## Uso di strumenti di AI
 
-📌 Per una descrizione più dettagliata dell’uso dell’AI, utilizzare la **Wiki del repository**.
+Ho usato strumenti di AI, nello specifico Claude e Gemini, come supporto per:
 
-### Esempi :
+- modifiche e rifiniture del codice;
+- la scrittura dei commenti Javadoc;
+- l'utilizzo della grafica (font, sfondi e sprite) nel gioco.
 
-* Utilizzato ChatGPT per:
+La dichiarazione dettagliata è nella [Wiki](https://github.com/gloriaricci/Progetto-Ricci-Modellazione/wiki).
 
-    * comprendere concetti teorici (es. differenza tra classi e oggetti)
-    * chiarire errori di compilazione
-    * suggerimenti su struttura del codice
+## Crediti
 
-* Utilizzato Copilot per:
-
-    * autocompletamento di metodi semplici
-    * generazione di codice ripetitivo (es. getter/setter)
-
-* Utilizzato ChatGPT per generare una prima versione di una funzione, poi:
-
-    * modificata e adattata manualmente
-    * testata e corretta personalmente
-
----
-
-Oppure:
-
-- Non sono stati utilizzati strumenti di AI
-
----
-
-## ⚠️ Nota
-
-Questo è un template: **modificare e adattare tutte le parti necessarie** in base al proprio progetto
-
+- Font: Press Start 2P (CodeMan38), licenza SIL Open Font License 1.1. Il testo della licenza è in `src/main/resources/fonts/OFL.txt`.
+- Sprite e sfondi: scaricati gratuitamente da internet e da itch.io e dichiarati liberamente utilizzabili; non è disponibile l'indicazione di autore o licenza.
 
 
 
