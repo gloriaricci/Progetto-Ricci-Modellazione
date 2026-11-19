@@ -4,6 +4,13 @@ import it.unicam.cs.mpgc.rpg129873.ability.ActiveAbility;
 import it.unicam.cs.mpgc.rpg129873.ability.PassiveAbility;
 import it.unicam.cs.mpgc.rpg129873.weapon.Weapon;
 
+/**
+ * Eroe controllato dal giocatore. Ha una sola arma, una sola abilità passiva e una
+ * sola abilità attiva: ogni nuova ricompensa sostituisce quella precedente, non c'è
+ * inventario. Tiene il conteggio dei turni giocati ({@code turnCount}), che serve alle
+ * abilità passive; il conteggio non viene salvato e riparte da zero dopo un caricamento.
+ */
+
 public class Hero extends Entity {
     private Weapon currentWeapon;
     private PassiveAbility passive;
@@ -43,6 +50,11 @@ public class Hero extends Entity {
         return activeAbility != null;
     }
 
+    /**
+     * Da chiamare all'inizio di ogni turno in cui il giocatore attacca o usa
+     * l'abilità (non quando beve una pozione). Incrementa il contatore, quindi
+     * la prima azione ha turno 1, e dà alla passiva la possibilità di agire (per esempio curare).
+     */
     public void onTurnStart() {
         turnCount++;
 
@@ -52,6 +64,11 @@ public class Hero extends Entity {
     }
 
     @Override
+    /**
+     * Danno di un attacco: potenza di base (0 per Nox) più il danno dell'arma, poi
+     * modificato dalla passiva. Il risultato dipende dal turno corrente, quindi due
+     * chiamate in turni diversi possono dare valori diversi (vedi {@code ScattoRapido}).
+     */
     public int getAttackPower() {
         int damage = super.getAttackPower();
         if (currentWeapon != null) {
@@ -71,6 +88,9 @@ public class Hero extends Entity {
         }
     }
 
+    /**
+     * @return {@code false} se l'eroe non ha ancora un'abilità attiva (non succede nulla)
+     */
     public boolean useActiveAbility(Entity target) {
         if (activeAbility == null) {
             return false;

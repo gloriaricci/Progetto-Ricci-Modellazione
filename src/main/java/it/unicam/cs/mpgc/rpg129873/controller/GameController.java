@@ -5,6 +5,13 @@ import it.unicam.cs.mpgc.rpg129873.game.GameStatus;
 
 import java.util.Objects;
 
+/**
+ * Unico punto di contatto tra la vista e le regole di gioco: traduce i comandi
+ * dell'utente (attacco, pozione, abilità, risposta del nemico) in chiamate a {@link Game}
+ * e fa passare ogni azione da {@link CheckpointManager}, così il salvataggio avviene senza
+ * che la vista se ne occupi. Non dipende da JavaFX: un'altra interfaccia (mobile, web)
+ * può riusarlo così com'è.
+ */
 public class GameController {
 
     private final Game game;

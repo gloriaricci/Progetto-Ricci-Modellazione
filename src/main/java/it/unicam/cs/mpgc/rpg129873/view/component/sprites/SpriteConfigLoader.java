@@ -11,6 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Legge {@code sprites.json} dalle risorse. Se il file manca o non è valido non blocca il
+ * gioco: scrive un avviso su stderr e restituisce una mappa vuota, così la vista usa i riquadri di riserva.
+ */
 public class SpriteConfigLoader {
 
     private static final String DEFAULT_RESOURCE = "/images/sprites/sprites.json";

@@ -6,6 +6,12 @@ import it.unicam.cs.mpgc.rpg129873.game.GameEvent.*;
 
 import java.util.Optional;
 
+/**
+ * Decide quale animazione far partire e su chi (eroe o nemico) per ciascun evento.
+ * I nomi {@link #ATTACK} e {@link #ABILITY} devono coincidere con quelli delle animazioni
+ * in {@code sprites.json}. Se uno sprite non ha l'animazione richiesta, l'indicazione viene
+ * ignorata. Gli eventi senza animazione restituiscono {@code Optional.empty()}.
+ */
 public class EventAnimationMapper {
 
     public static final String ATTACK = "attack";

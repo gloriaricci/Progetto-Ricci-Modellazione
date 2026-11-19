@@ -4,6 +4,13 @@ import it.unicam.cs.mpgc.rpg129873.game.GameEvent;
 import it.unicam.cs.mpgc.rpg129873.game.GameEvent.*;
 import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
 
+/**
+ * Trasforma gli eventi di gioco nei testi mostrati al giocatore, e stabilisce quali
+ * eventi meritano una schermata a tutto schermo (annunci) e quali restano solo nel log.
+ * Tiene tutte le frasi in un posto solo: il dominio non contiene testo, e tradurre
+ * il gioco significa modificare solo questa classe. Gli switch non hanno ramo
+ * {@code default}, quindi un nuovo {@link GameEvent} va gestito qui per compilare.
+ */
 public class EventTextFormatter {
 
     public String format(GameEvent event) {
@@ -37,6 +44,10 @@ public class EventTextFormatter {
         };
     }
 
+    /**
+     * Costruisce l'annuncio di un evento. Chiamare solo per gli eventi per cui
+     * {@link #isAnnouncement} è vero: per gli altri lancia {@link IllegalArgumentException}.
+     */
     public Announcement toAnnouncement(GameEvent event) {
         return switch (event) {
             case LevelStarted e -> new Announcement("Livello " + e.level(), e.enemyName());

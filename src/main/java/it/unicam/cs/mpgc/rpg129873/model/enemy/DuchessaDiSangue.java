@@ -4,6 +4,12 @@ import it.unicam.cs.mpgc.rpg129873.model.Enemy;
 import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
 import it.unicam.cs.mpgc.rpg129873.model.Hero;
 
+/**
+ * Boss del livello 4. Ogni due attacchi recupera 10 punti vita (furto di vita) e lo
+ * segnala con {@code EnemyEffect.Kind.LIFE_STEAL}. Il recupero è fisso: non dipende dal
+ * danno inflitto.
+ */
+
 public class DuchessaDiSangue extends Enemy {
     private int turnCounter;
 

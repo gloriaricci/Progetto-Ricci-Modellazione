@@ -7,6 +7,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Trova lo sprite di un id. Se l'id è nella configurazione usa lo sheet animato descritto
+ * lì, a patto che le animazioni stiano nell'immagine (altrimenti lo scarta con un avviso).
+ * Se non è configurato, cerca {@code <id>.png} e lo mostra come immagine fissa a un solo frame.
+ */
 public class ResourceSpriteProvider implements SpriteProvider {
 
     private static final String FOLDER = "/images/sprites/";

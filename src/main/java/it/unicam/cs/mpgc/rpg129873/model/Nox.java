@@ -1,5 +1,9 @@
 package it.unicam.cs.mpgc.rpg129873.model;
 
+/**
+ * Il protagonista: un eroe con vita iniziale 100 e due pozioni che curano 40 punti vita.
+ */
+
 public class Nox extends Hero implements PotionHolder {
 
     private static final int MAX_POTIONS = 2;

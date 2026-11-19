@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import java.util.Objects;
 import java.util.Optional;
 
+/** Cerca {@code /images/level<N>.gif}; se manca usa {@code /images/background.gif}, e se manca anche quello non restituisce nulla. */
 public class ResourceBackgroundProvider implements BackgroundProvider {
 
     private static final String LEVEL_PATTERN = "/images/level%d.gif";

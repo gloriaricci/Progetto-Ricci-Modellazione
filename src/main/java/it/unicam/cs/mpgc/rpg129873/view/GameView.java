@@ -19,6 +19,18 @@ import java.util.ArrayDeque;
 import java.util.Objects;
 import java.util.Queue;
 
+/**
+ * Schermata di combattimento. Segue il flusso del gioco in due modi:
+ * <ul>
+ * <li>{@link #onEvent}: riceve gli eventi, li scrive nel log, avvia le animazioni e mette in
+ * coda gli annunci a tutto schermo, mostrati uno alla volta;</li>
+ * <li>{@link #refresh}: rilegge lo stato e aggiorna barre, sprite e pulsanti.</li>
+ * </ul>
+ * Dopo ogni azione del giocatore la risposta del nemico parte dopo una breve pausa
+ * ({@link EnemyTurnScheduler}), così l'utente vede prima la propria mossa. Se il nemico deve ancora rispondere,
+ * c'è un annuncio a schermo o la partita è finita, i pulsanti restano bloccati.
+ * A partita finita avvisa chi l'ha creata ({@code onFinished}) dopo una breve attesa, una sola volta.
+ */
 public class GameView {
 
     private static final double END_DELAY_MS = 1500;
@@ -105,6 +117,8 @@ public class GameView {
 
     public void refresh() {
         GameStatus status = controller.getStatus();
+        // Il giocatore può agire solo se la partita è in corso, il nemico non deve
+        // ancora rispondere e non c'è un annuncio da chiudere.
         boolean locked = status.finished()
                 || controller.isEnemyTurnPending()
                 || overlay.isShowing();
@@ -126,6 +140,10 @@ public class GameView {
         target.play(cue.animation());
     }
 
+    /**
+     * Mostra il prossimo annuncio in coda. Quando non ce ne sono più (all'ultimo click), aggiorna la
+     * schermata e fa partire la risposta del nemico, che era stata rimandata durante gli annunci.
+     */
     private void showNextAnnouncement() {
         Announcement next = announcements.poll();
         if (next != null) {

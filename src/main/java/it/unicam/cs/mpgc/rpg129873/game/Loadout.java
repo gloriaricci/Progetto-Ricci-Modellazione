@@ -7,6 +7,14 @@ import it.unicam.cs.mpgc.rpg129873.model.Hero;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fotografia dell'equipaggiamento dell'eroe (arma, passiva, attiva), identificato
+ * per nome. {@link Game} ne scatta una prima e una dopo l'applicazione di una
+ * {@code Reward} e {@link #gainedSince} produce un evento per ogni slot cambiato:
+ * così le ricompense non devono dichiarare da sole che cosa hanno assegnato.
+ * Non viene salvata su disco.
+ */
+
 public record Loadout(String weapon, String passive, String activeAbility) {
 
     public static Loadout of(Hero hero) {
@@ -15,6 +23,11 @@ public record Loadout(String weapon, String passive, String activeAbility) {
                 hero.getPassive() != null ? hero.getPassive().getName() : null,
                 hero.hasActiveAbility() ? hero.getActiveAbility().getName() : null);
     }
+
+    /**
+     * Confronta per nome: un oggetto sostituito da uno con nome diverso conta come
+     * ottenuto. Uno slot vuoto non genera mai eventi.
+     */
 
     public List<RewardGained> gainedSince(Loadout before) {
         List<RewardGained> gained = new ArrayList<>();

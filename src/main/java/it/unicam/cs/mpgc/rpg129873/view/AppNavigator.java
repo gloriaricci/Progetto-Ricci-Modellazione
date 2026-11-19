@@ -17,6 +17,12 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Gestisce le schermate (menu, partita, fine partita) e l'avvio delle partite:
+ * nuova, ripresa da salvataggio o ricominciata da capo. Usa una sola {@link Scene} e
+ * sostituisce solo la radice, così il foglio di stile si carica una volta e la finestra non
+ * viene ricreata a ogni cambio di schermata. Riceve tutte le dipendenze dall'esterno.
+ */
 public class AppNavigator {
     private static final double WIDTH = 960;
     private static final double HEIGHT = 540;
@@ -48,6 +54,10 @@ public class AppNavigator {
         startGame(loadSavedGame().orElseGet(factory::newGame));
     }
 
+    /**
+     * Un salvataggio che non si riesce a ricostruire (per esempio un livello che non esiste
+     * più) viene cancellato e si ricomincia da zero.
+     */
     private Optional<Game> loadSavedGame() {
         Optional<GameState> saved = repository.load();
         try {
@@ -67,6 +77,8 @@ public class AppNavigator {
         GameController controller = new GameController(game, new CheckpointManager(game, repository));
         GameView view = new GameView(controller, backgrounds, sprites, this::showMenu,
                 () -> showEnd(controller.getStatus()));
+        // Il gestore va collegato prima di start(), altrimenti il primo evento
+        // (inizio livello) andrebbe perso.
         listener.setHandler(view::onEvent);
         controller.start();
         view.refresh();
@@ -85,6 +97,7 @@ public class AppNavigator {
     }
 
     private void show(Parent root) {
+        // La Scene si crea alla prima schermata; dopo basta cambiare la radice.
         if (scene == null) {
             scene = new Scene(root, WIDTH, HEIGHT);
             URL stylesheet = AppNavigator.class.getResource(STYLESHEET);

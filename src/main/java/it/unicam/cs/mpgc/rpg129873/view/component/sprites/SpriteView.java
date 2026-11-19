@@ -12,6 +12,11 @@ import javafx.util.Duration;
 
 import java.util.Objects;
 
+/**
+ * Disegna uno sprite animato: ritaglia il frame corrente dallo sheet (viewport) e un
+ * {@code Timeline} lo cambia secondo {@link FramePlayer}. Se lo sprite non esiste mostra un
+ * riquadro colorato. Il timer si ferma da solo quando la vista viene tolta dalla scena.
+ */
 public class SpriteView extends StackPane {
 
     private static final double FALLBACK_SIZE = 160;
@@ -45,6 +50,7 @@ public class SpriteView extends StackPane {
     }
 
     public void setSprite(String id) {
+        // Stesso id: non si riparte, così gli aggiornamenti ripetuti non azzerano l'animazione in corso.
         if (Objects.equals(id, currentId)) {
             return;
         }
@@ -95,10 +101,13 @@ public class SpriteView extends StackPane {
     }
 
     private void nextFrame() {
+        // Se la schermata è stata sostituita, il timer non serve più.
         if (isDetached()) {
             stopTimeline();
             return;
         }
+        // Un'animazione non ciclica è finita e si è tornati a idle: i frame di idle
+        // durano diversamente, quindi il timer va ricreato.
         if (player.advance()) {
             restartTimeline();
         } else {

@@ -15,6 +15,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Salva l'unico checkpoint in un file JSON (via Gson). La scrittura è sicura contro
+ * le interruzioni: il salvataggio precedente non viene mai lasciato a metà.
+ */
 public class JsonGameRepository implements GameRepository {
 
     private final Path file;
@@ -26,6 +30,9 @@ public class JsonGameRepository implements GameRepository {
 
     @Override
     public void save(GameState state) {
+        // Si scrive prima su un file temporaneo accanto a quello vero e poi lo si sposta
+        // al suo posto: se il programma si interrompe durante la scrittura, il vecchio
+        // salvataggio resta intatto.
         Path temporary = file.resolveSibling(file.getFileName() + ".tmp");
         try {
             try (Writer writer = Files.newBufferedWriter(temporary)) {
@@ -38,6 +45,11 @@ public class JsonGameRepository implements GameRepository {
     }
 
     @Override
+    /**
+     * Un file mancante, con JSON malformato o con valori rifiutati da {@link GameState}
+     * conta come "nessun salvataggio". Solo un vero errore di lettura del disco
+     * viene propagato come {@link UncheckedIOException}.
+     */
     public Optional<GameState> load() {
         if (!Files.exists(file)) {
             return Optional.empty();
@@ -47,7 +59,8 @@ public class JsonGameRepository implements GameRepository {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } catch (RuntimeException e) {
-
+            // JSON non valido o valori fuori intervallo (il costruttore di GameState li rifiuta):
+            // un file rovinato non deve impedire di giocare, si riparte da zero.
             return Optional.empty();
         }
     }
@@ -62,6 +75,8 @@ public class JsonGameRepository implements GameRepository {
     }
 
     private void replaceFileWith(Path temporary) throws IOException {
+        // ATOMIC_MOVE rende la sostituzione tutto-o-niente. Non tutti i file system lo
+        // supportano: in quel caso si ripiega su una sostituzione normale.
         try {
             Files.move(temporary, file,
                     StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);

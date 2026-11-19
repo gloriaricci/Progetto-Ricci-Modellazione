@@ -9,6 +9,11 @@ import javafx.scene.paint.Color;
 
 import java.util.Objects;
 
+/**
+ * Sfondo a tutta schermata di un livello. Se l'immagine non c'è, resta un colore
+ * pieno scelto in base al livello (i colori si ripetono dopo l'ultimo). {@link #setLevel}
+ * non fa nulla se il livello è lo stesso, per non ricaricare l'immagine a ogni aggiornamento.
+ */
 public class LevelBackground extends StackPane {
 
     private static final Color[] FALLBACK_COLORS = {

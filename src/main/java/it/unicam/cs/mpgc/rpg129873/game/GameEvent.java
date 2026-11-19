@@ -2,6 +2,17 @@ package it.unicam.cs.mpgc.rpg129873.game;
 
 import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
 
+/**
+ * Tutto ciò che può accadere in una partita, descritto come dato immutabile.
+ * {@link Game} li emette tramite {@link GameEventListener}; la vista li
+ * trasforma in testo ({@code EventTextFormatter}) e in animazioni
+ * ({@code EventAnimationMapper}) senza interrogare direttamente il modello.
+ * <p>
+ * L'interfaccia è {@code sealed} e gli switch che la usano non hanno ramo
+ * {@code default}: aggiungere un evento fa fallire la compilazione in tutti i
+ * punti da aggiornare, così nessun evento resta senza testo o animazione.
+ */
+
 public sealed interface GameEvent {
 
     enum RefusalReason {FULL_HP, NO_POTIONS}

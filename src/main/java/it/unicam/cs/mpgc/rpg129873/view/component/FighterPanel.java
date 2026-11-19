@@ -8,6 +8,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+/**
+ * Nome, barra della vita e sprite di un combattente. Lo sprite sta in uno spazio di altezza
+ * fissa, appoggiato in basso: così nomi e barre restano allineate anche se gli sprite
+ * hanno dimensioni diverse.
+ */
 public class FighterPanel extends VBox {
 
     private static final double SPACING = 10;

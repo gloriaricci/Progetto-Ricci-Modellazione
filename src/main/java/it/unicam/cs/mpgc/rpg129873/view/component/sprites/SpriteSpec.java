@@ -2,6 +2,14 @@ package it.unicam.cs.mpgc.rpg129873.view.component.sprites;
 
 import java.util.Map;
 
+/**
+ * Descrizione di uno sprite sheet: nome del file in {@code /images/sprites/}, dimensione di
+ * una cella ({@code frameWidth} x {@code frameHeight}) e animazioni per nome.
+ * L'animazione {@code idle} è obbligatoria e deve ripetersi, perché è quella a cui si
+ * torna dopo ogni altra. {@code scale} ingrandisce lo sprite (pixel art, quindi senza
+ * sfumature): 0 significa "usa lo zoom predefinito della vista". La chiave del
+ * JSON è l'id dell'entità ({@code "nox"}, {@code "boss1"}...).
+ */
 public record SpriteSpec(String file, int frameWidth, int frameHeight,
                          Map<String, AnimationSpec> animations, int scale) {
 
@@ -31,6 +39,7 @@ public record SpriteSpec(String file, int frameWidth, int frameHeight,
         animations = Map.copyOf(animations);
     }
 
+    /** Vero se tutte le animazioni, non solo idle, stanno dentro un'immagine di quelle dimensioni. */
     public boolean fitsIn(int imageWidth, int imageHeight) {
         return animations.values().stream().allMatch(animation ->
                 (animation.startFrame() + animation.frames()) * frameWidth <= imageWidth

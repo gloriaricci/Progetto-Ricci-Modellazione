@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Carica immagini dalle risorse e le tiene in cache, anche quando mancano o sono rovinate
+ * (in quel caso restituisce {@code Optional.empty()}): un file assente non viene cercato di nuovo a ogni aggiornamento.
+ */
 public class ResourceImageLoader implements ImageLoader {
 
     private final Map<String, Optional<Image>> cache = new ConcurrentHashMap<>();

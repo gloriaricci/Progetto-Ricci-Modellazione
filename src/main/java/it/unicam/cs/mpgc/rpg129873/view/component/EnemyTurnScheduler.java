@@ -3,6 +3,11 @@ package it.unicam.cs.mpgc.rpg129873.view.component;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
+/**
+ * Fa rispondere il nemico dopo una pausa fissa. Non programma nulla se la risposta non è
+ * in sospeso, se ce n'è già una programmata o se {@code blocked} è vero (un annuncio
+ * è a schermo): in quel caso la vista richiama {@link #scheduleIfNeeded} alla chiusura.
+ */
 public class EnemyTurnScheduler {
 
     private static final double DELAY_MS = 700;

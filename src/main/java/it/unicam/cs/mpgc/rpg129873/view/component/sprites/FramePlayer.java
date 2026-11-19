@@ -3,6 +3,12 @@ package it.unicam.cs.mpgc.rpg129873.view.component.sprites;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Logica dei frame senza JavaFX (quindi testabile): sa quale riga e colonna dello sheet
+ * mostrare adesso. Ciclo: parte da idle; {@link #play} avvia un'altra animazione dal primo
+ * frame; {@link #advance} passa al frame successivo e, quando un'animazione non ciclica
+ * finisce, torna a idle. {@link SpriteView} legge da qui che cosa disegnare e ogni quanto.
+ */
 public class FramePlayer {
 
     private final Map<String, AnimationSpec> animations;
@@ -19,6 +25,7 @@ public class FramePlayer {
         start(this.animations.get(SpriteSpec.IDLE));
     }
 
+    /** Riavvia dal primo frame anche se l'animazione era già in corso. Un nome sconosciuto viene ignorato (restituisce {@code false}). */
     public boolean play(String animationName) {
         AnimationSpec animation = animations.get(animationName);
         if (animation == null) {
@@ -28,6 +35,10 @@ public class FramePlayer {
         return true;
     }
 
+    /**
+     * @return {@code true} solo se un'animazione non ciclica è appena finita e si è tornati
+     * a idle: la durata dei frame cambia, quindi il chiamante deve ricreare il timer
+     */
     public boolean advance() {
         if (frameIndex + 1 < current.frames()) {
             frameIndex++;

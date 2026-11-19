@@ -4,6 +4,12 @@ import it.unicam.cs.mpgc.rpg129873.model.Enemy;
 import it.unicam.cs.mpgc.rpg129873.model.EnemyEffect;
 import it.unicam.cs.mpgc.rpg129873.model.Hero;
 
+/**
+ * Boss finale. Ogni due attacchi recupera 20 punti vita (distorsione temporale) e lo
+ * segnala con {@code EnemyEffect.Kind.TIME_DISTORTION}. Il recupero è fisso e non
+ * supera mai la vita massima.
+ */
+
 public class BaroneShimmer extends Enemy {
 
     private int turnCounter = 0;
