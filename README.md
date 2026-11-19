@@ -38,6 +38,7 @@ Ho usato strumenti di AI, nello specifico Claude e Gemini, come supporto per:
 - modifiche e rifiniture del codice;
 - la scrittura dei commenti Javadoc;
 - l'utilizzo della grafica (font, sfondi e sprite) nel gioco.
+- una prima base per i testi della Wiki.
 
 La dichiarazione dettagliata è nella [Wiki](https://github.com/gloriaricci/Progetto-Ricci-Modellazione/wiki).
 

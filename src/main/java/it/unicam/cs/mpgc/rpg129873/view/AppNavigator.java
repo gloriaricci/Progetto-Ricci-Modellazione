@@ -91,7 +91,7 @@ public class AppNavigator {
                 "Nox, hai sconfitto il barone dello shimmer e liberato la città!",
                 "end-title-victory", status.levelNumber(), backgrounds, this::showMenu)
                 : new EndView("GAME OVER",
-                "Nox, sei stato sconfitto! Riprova dall'inizio del livello.",
+                "Nox, sei stata sconfitta! Riprova dall'inizio del livello.",
                 "end-title-defeat", status.levelNumber(), backgrounds, this::showMenu);
         show(end.getRoot());
     }
