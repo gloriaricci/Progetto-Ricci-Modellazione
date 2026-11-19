@@ -22,7 +22,7 @@ Per lanciare solo i test: `./gradlew test`
 
 ## Come si gioca
 
-- **Nuova partita / Continua**: dal menu si riparte da zero oppure dall'ultimo checkpoint, salvato all'inizio di ogni livello nel file `nox-save.json`.
+- **Menu**: "Inizia a giocare" riprende dall'ultimo checkpoint (salvato all'inizio di ogni livello nel file `nox-save.json`) oppure parte da zero se non c'è un salvataggio; "Ricomincia il gioco" cancella il salvataggio e riparte dal livello 1.
 - **Attacco**: attacca il nemico con l'arma corrente.
 - **Pozioni**: due cerchi che curano Nox; diventano grigi quando sono usati.
 - **Abilità**: il pulsante compare quando Nox ha un'abilità da attivare.
